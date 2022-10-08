@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/app.css" rel="stylesheet" />
     <link href="MauiBlazorPermissionsExample.styles.css" rel="stylesheet" />
+    <script src="_content/Syncfusion.Blazor.Core/scripts/syncfusion-blazor.min.js" type="text/javascript"></script>
+    <link href="Cesium-1.77/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link href="Cesium-1.77/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="Cesium-1.77/Build/Cesium/Cesium.js" crossorigin="anonymous"></script>
+    <link href="https://cesiumjs.org/releases/1.70/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="js/dojo.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+
+
+
+
 </head>
 
 <body>
@@ -25,7 +38,670 @@
     <script src="_framework/blazor.webview.js" autostart="false"></script>
     <script src="js/location.js"></script>
     <script src="js/camera.js"></script>
+    <script src="function.js"></script>
+    <script src="gis.js"></script>
+    <script src="database.js"></script>
 
+
+    <script src="location.js"></script>
+
+    <script src="/js/Custom.js"></script>
+    <script>var USER = {}
+        var PAGES = {}
+        var TABLES = {}
+        var CONFIG = {}
+
+        var GIS;
+        var DB = new database();
+        var Provinces, Districts, SubDistricts;
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        };
+
+        function success(pos) {
+            const crd = pos.coords;
+
+            console.log('Your current position is:');
+            console.log(`Latitude : ${crd.latitude}`);
+            console.log(`Longitude: ${crd.longitude}`);
+            console.log(`More or less ${crd.accuracy} meters.`);
+        }
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+        var dbProvinces = function (c) {
+            if (Provinces) {
+                if (c) {
+                    c(Provinces);
+                }
+                return Provinces;
+            }
+
+            $.ajax({
+                url: "https://www.livingonnewpace.com/gis2v3/database.php",
+                type: "post",
+                async: true,
+                data: { table: 'province' },
+                success: function (r) {
+                    r = JSON.parse(r);
+                    Provinces = {};
+                    $.each(r.data, function () {
+                        this.id = this.province_id;
+                        this.name = this.province_name_thai;
+                        Provinces[this.id] = this;
+                    });
+                    if (c) {
+                        c(Provinces);
+                    }
+                },
+                error: function () {
+                    //connectionError();
+                }
+            });
+            // DB.db({table:'province'}).get(function(r){
+            // Provinces = {};
+            // $.each(r.data,function(){
+            // this.id = this.province_id;
+            // this.name = this.province_name_thai;
+            // Provinces[this.id] = this;
+            // });
+            // if(c){
+            // c(Provinces);
+            // }
+            return Provinces;
+            // });
+        }
+        var dbDistricts = function (pid, c) {
+            if (!Districts) {
+                Districts = {};
+            }
+            if (Districts[pid]) {
+                if (c) {
+                    c(Districts[pid]);
+                }
+                return Districts[pid];
+            }
+            DB.db({ table: 'district', where: 'province_id=' + pid }).get(function (r) {
+                $.each(r.data, function () {
+                    this.id = this.district_id;
+                    var name = this.district_name_thai;
+                    if (name.startsWith('เขต')) {
+                        name = name.replace('เขต', '');
+                    } else if (name.startsWith('อำเภอ')) {
+                        name = name.replace('อำเภอ', '');
+                    }
+                    this.name = name;
+                });
+                Districts[pid] = r.data;
+                if (c) {
+                    c(Districts[pid]);
+                }
+                return Districts[pid];
+            });
+        }
+        var dbSubDistricts = function (did, c) {
+            if (!SubDistricts) {
+                SubDistricts = {};
+            }
+            if (SubDistricts[did]) {
+                if (c) {
+                    c(SubDistricts[did]);
+                }
+                return SubDistricts[did];
+            }
+            DB.db({ table: 'tambon', where: 'district_id=' + did }).get(function (r) {
+                $.each(r.data, function () {
+                    this.id = this.tambon_id;
+                    var name = this.tambon_name_thai;
+                    if (name.startsWith('แขวง')) {
+                        name = name.replace('แขวง', '');
+                    }
+                    this.name = name;
+                });
+                SubDistricts[did] = r.data;
+                if (c) {
+                    c(SubDistricts[did]);
+                }
+                return SubDistricts[did];
+            });
+        }
+        Provinces = dbProvinces();
+        function Auth() {
+            if (!$('#profile_button')[0]) {
+                var p = [
+                    { title: 'โปรไฟล์', icon: 'zmdi zmdi-account-box', href: '#profile' },
+                    { title: 'ออกจากระบบ', icon: 'zmdi zmdi-power', href: '../survey_p2/logout.php' }
+                ]
+                var pf = '<div class="dropdown" id="profile_button" title="โปรไฟล์" style="float:right;right: 4px;"><span class="zmdi zmdi-account" id="ProfileButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #EEE;font-size: 32px;padding:3px;cursor: pointer;"></span>';
+                pf = pf + '<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="ProfileButton">';
+                $.each(p, function () {
+                    pf = pf + '<li class="dropdown-item" style="padding: 8px;font-size:16px;" title="' + this.title + '"><a class="' + this.icon + '" style="text-decoration: none;" href="' + this.href + '"><span style="padding: 10px;">' + this.title + '</span></a></li>';
+                });
+                pf = pf + '</ul></div>';
+                $('#menu_bar').append(pf);
+            }
+            var cookie;
+            var dataJson;
+            /*$.ajax({
+                url: "../survey_p2/cookie.php",
+                type: "get",
+                async: false,
+                success: function (r) {
+                    ////console.log("cookie");
+                    cookie = JSON.parse(r);
+                    USER.username = cookie.username_log;
+                    if (!USER.username) {
+                        window.location.href = '../survey_p2/?curr=login';
+                    }
+                    dataJson = { table: 'volunteer', where: "username='" + USER.username + "'" }
+                    $.ajax({
+                        url: "https://www.livingonnewpace.com/gis2v3/database.php",
+                        type: "post",
+                        async: false,
+                        data: dataJson,
+                        success: function (d) {
+                            d = JSON.parse(d);
+                            if (d.data && d.data[0]) {
+                                var u = d.data[0];
+                                USER.id = u.id;
+                                USER.level = u.level;
+                                USER.email = u.email;
+                                //console.log(USER);
+                                if (u.JUN) {
+                                    USER.Province = Provinces[u.JUN];
+                                }
+                                setTimeout(function () {
+                                    console.log(USER)
+                                }, 5000);
+                            }
+                        },
+                        error: function () {
+                            //connectionError();
+                        }
+                    });
+                },
+                error: function () {
+                    //connectionError();
+                }
+            });
+            */
+
+            // $.get('database.php').done(function(r){
+
+            // console.log("cookie");
+            // var cookie = JSON.parse(r);
+            // USER.username = cookie.username_log;
+            // if(!USER.username){
+            // window.location.href = '../survey_p2/?curr=login';
+            // }
+            // DB.db().get(function(d){
+            // if(d.data && d.data[0]){
+            // var u = d.data[0];
+            // USER.id = u.id;
+            // USER.level = u.level;
+            // USER.email = u.email;
+            // console.log(USER);
+            // if(u.JUN){
+            // USER.Province = Provinces[u.JUN];
+            // }
+            // setTimeout(function(){console.log(USER)},5000);
+            // }
+            // });
+            // });
+            ///	setTimeout(Auth, 30 * 60 * 1000);*/
+        }
+        /////////////////////Auth();
+        var Modules = [
+            { title: 'สมาชิกอาสาสมัคร', icon: 'zmdi zmdi-accounts-list', href: '#volunteer', table: true, name: 'volunteer', script: 'modules/volunteer.js' },
+            //{title:'ข้อมูลครัวเรือน (จปฐ.)',icon:'zmdi zmdi-pin',href:'#poverty_pattani',map:true,table:true,name:'poverty_pattani',script:'modules/poverty_pattani.js'},
+            { title: 'โปรไฟล์', icon: 'zmdi zmdi-account', name: 'profile', href: '#profile', script: 'modules/profile.js' },
+            { title: 'ข้อมูลครัวเรือน', icon: 'zmdi zmdi-pin', href: '#survey_profile', map: true, table: true, name: 'survey_profile', script: 'modules/survey_profile.js' }
+        ];
+        var menu = '<div class="dropdown" id="menu_button" title="เมนู">' +
+            '<span class="zmdi zmdi-menu" title="เมนู" id="MenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #EEE;font-size: 32px;padding:3px;cursor: pointer;"></span>' +
+            '<ul id="menu_items" class="dropdown-menu" aria-labelledby="MenuButton">' +
+            '<li class="dropdown-item" style="padding: 8px;font-size:16px;" title="แผนที่"><a class="zmdi zmdi-map" style="text-decoration: none;" href="#map"><span style="padding: 10px;">แผนที่</span></a></li>' +
+            '<li class="dropdown-item" style="padding: 8px;font-size:16px;" title="แบบสำรวจ"><a class="zmdi zmdi-view-comfy" style="text-decoration: none;" href="/survey_p2"><span style="padding: 10px;">แบบสำรวจ</span></a></li>' +
+            '</ul></div>';
+        $('#menu_bar').append(menu).show();
+        $.each(Modules, function () {
+            var m = '<li class="dropdown-item" style="padding: 8px;font-size:16px;" title="' + this.title + '"><a class="' + this.icon + '" style="text-decoration: none;" href="' + this.href + '"><span id="' + this.name + '_menu" style="padding: 10px;">' + this.title + '</span></a></li>';
+            $('#menu_items').append(m);
+        });
+
+        var page_title = '<div style="font-size: 1.2em;text-align: center;width: 80%;position: fixed;top: 6px;line-height: 15px;left: 36px;padding: 0;color: #edffff;text-shadow: 1px 2px #160767;;"></div>';
+        $('#menu_bar').append(page_title);
+        menuChange();
+        window.addEventListener('popstate', function () {
+            pageHash();
+        });
+        setTimeout(function () {
+            pageHash();
+        }, 1000);
+        function menuChange() {
+            if ($('#menu_button').hasClass('open')) {
+                $('#MenuButton').attr('class', 'zmdi zmdi-close');
+            } else {
+                $('#MenuButton').attr('class', 'zmdi zmdi-menu');
+            }
+            setTimeout(menuChange, 500);
+        }
+        function pageHash() {
+            if (GIS) {
+                GIS.hide();
+            }
+            if (window.location.hash) {
+                var hash = window.location.hash;
+                if (hash == '#map') {
+                    LoadMap(function (map) {
+                        map.show();
+                    });
+                } else {
+                    if (Cesium.Fullscreen.fullscreen) {
+                        Cesium.Fullscreen.exitFullscreen();
+                    }
+                }
+                $.each(Modules, function () {
+
+                    $(this.href + '_table').hide();
+                    //console.log(this);
+                    if (this.href == hash) {
+
+                        if (this.table) {
+
+                            openTable(this);
+                        } else {
+                            if (!this.map) {
+
+                                loadPage(this);
+                            }
+                        }
+                    }
+                });
+            } else {
+                window.location.hash = '#map';
+            }
+        }
+        function loadPage(m) {
+            if (!$('#' + m.name + '_table')[0]) {
+                $('body').append('<div id="' + m.name + '_table" style="padding:10px;width:98%;margin-top:50px;"></div>');
+            }
+            if (!PAGES[m.name]) {
+                Require(m.script, function (mod) {
+                    PAGES[m.name] = mod('#' + m.name + '_table');
+                    PAGES[m.name].show();
+                });
+            } else {
+                PAGES[m.name].show();
+            }
+        }
+        function openTable(m) {
+            var table = m.name;
+            $.each(Modules, function () {
+                if (window.location.hash != this.href && this.name) {
+                    $('#' + this.name + '_table').css('top', '-100px');
+                    $('#' + this.name + '_table').hide();
+                    if (TABLES[this.name] && TABLES[this.name].dataTables) {
+                        TABLES[this.name].dataTables.fixedHeader.headerOffset(-100);
+                    }
+                }
+            });
+            if (!TABLES[table]) {
+                var script = m.script;
+                var h = 84;
+                $('body').append('<div id="' + table + '_table" style="top:' + h + 'px;padding:0 10px;width:100%;position:relative;"><table id="' + table + '_datatables" class="table table-hover table-striped table-responsive" cellspacing="0" width="100%"></table></div>');
+                TABLES[table] = true;
+                if (window.location.hash == m.href) {
+                    $('#' + table + '_table').show();
+                } else {
+                    $('#' + table + '_table').hide();
+                }
+                Require(script, function (mod) {
+                    TABLES[table] = mod();
+                    if (TABLES[table]) {
+                        TABLES[table].Table.headerOffset = h;
+                        TABLES[table].Table.TableID = table + '_datatables';
+
+                        var db = TABLES[table].Table.db ? TABLES[table].Table.db : { table: table }
+
+                        // if(1){
+                        if (table != "survey_profile") {
+
+                            TABLES[table].Connect = DB.db(db).Snapshot(function (s) {
+                                if (!TABLES[table].dataTables) {
+
+
+
+
+
+                                    //console.log(s);
+                                    TABLES[table].Snapshot = s;
+                                    SnapData(TABLES[table]);
+                                } else {
+                                    /*TABLES[table].newSnapshot = s;
+                                    processItem(TABLES[table]);*/
+                                }
+                            });
+
+
+
+
+
+                        } else {
+
+                            // $.getJSON('dataLatAndLevel.json', function(data2 ) {
+                            // $.getJSON('dataLatAndLevelFull.json', function(data2 ) {
+
+                            // $.getJSON('uploads/jsonFile/test2.json', function(data2 ) {
+                            // console.log("test.text");
+                            // TABLES[table].Snapshot = data2;
+                            // SnapData(TABLES[table]);
+                            // });
+
+                            console.log("test");
+
+                            var xhr = new XMLHttpRequest();
+
+                            method = "GET",
+                                jsonRequestURL = "uploads/jsonFile/mapNewLatLngnew.text";
+
+                            xhr.open(method, jsonRequestURL, true);
+                            xhr.onreadystatechange = function () {
+                                if (xhr.readyState == 4 && xhr.status == 200) {
+                                    var jsonArr = xhr.responseText.split(",");
+                                    var dataJson = { "data": [{}] };
+                                    // dataJson=JSON.stringify(dataJson);
+
+                                    for (let i = 0; i < jsonArr.length; i++) {
+                                        //check comma in json
+                                        // if(jsonArr[i].includes('"')){
+                                        // 	if((jsonArr[i].match(/"/g) || []).length!=2){
+                                        // 		console.log("i:"+i+"--->"+jsonArr[i]);
+                                        // 	}
+
+                                        // }
+
+                                        var textJson = {};
+                                        textJson.id = jsonArr[i];
+                                        textJson.HC = jsonArr[i];
+                                        // console.log(textJson.HC);
+                                        textJson.lat = jsonArr[i + 1];
+                                        textJson.lng = jsonArr[i + 2];
+                                        textJson.isInArea = jsonArr[i + 3];
+                                        textJson.lv1 = jsonArr[i + 4];
+                                        textJson.lv2 = jsonArr[i + 5];
+                                        textJson.lv3 = jsonArr[i + 6];
+                                        textJson.lv4 = jsonArr[i + 7];
+                                        textJson.lv5 = jsonArr[i + 8];
+                                        textJson.JUN = jsonArr[i + 9];
+                                        textJson.TMP = jsonArr[i + 10];
+                                        textJson.AMP = jsonArr[i + 11];
+
+                                        //console.log(textJson);
+                                        dataJson.data.push(textJson);
+                                        i = i + 11;
+                                        //+','debugger;
+                                        //console.log(5);
+                                    }
+                                    console.log("finish");
+                                    TABLES[table].Snapshot = dataJson;
+                                    SnapData(TABLES[table]);
+                                }
+                            }
+
+                            xhr.send(null);
+
+
+                        }
+                    }
+                });
+            } else {
+                $('#' + table + '_table').show();
+                $('#' + table + '_table').css('top', getTop() + 'px');
+                if (TABLES[table].dataTables) {
+                    TABLES[table].dataTables.search('').draw();
+                    TABLES[table].dataTables.fixedHeader.headerOffset(getTop() + 6);
+                    setTimeout(function () {
+                        $(window).trigger('resize');
+                        TABLES[table].dataTables.responsive.recalc();
+                    }, 200);
+                }
+            }
+        }
+        function deviceType() {
+
+
+            var sBrowser, sUsrAg = navigator.userAgent;
+            var mobileType = "survey_profile_android3runMiniJsonSplitJson";
+            // var mobileType="survey_profile_android3runMiniJson";
+            // var mobileType="survey_profile";
+            // The order matters here, and this may report false positives for unlisted browsers.
+            /*
+            if (sUsrAg.indexOf("Firefox") > -1) {
+                sBrowser = "Mozilla Firefox";
+                // "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0"
+                } else if (sUsrAg.indexOf("SamsungBrowser") > -1) {
+                sBrowser = "Samsung Internet";
+                // "Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-G955F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/67.0.3396.87 Mobile Safari/537.36
+                } else if (sUsrAg.indexOf("Opera") > -1 || sUsrAg.indexOf("OPR") > -1) {
+                sBrowser = "Opera";
+                // "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 OPR/57.0.3098.106"
+                } else if (sUsrAg.indexOf("Trident") > -1) {
+                sBrowser = "Microsoft Internet Explorer";
+                // "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; Zoom 3.6.0; wbx 1.0.0; rv:11.0) like Gecko"
+                } else if (sUsrAg.indexOf("Edge") > -1) {
+                sBrowser = "Microsoft Edge (Legacy)";
+                // "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 Edge/16.16299"
+                } else if (sUsrAg.indexOf("Edg") > -1) {
+                sBrowser = "Microsoft Edge (Chromium)";
+                // Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36 Edg/91.0.864.64
+                } else if (sUsrAg.indexOf("Chrome") > -1) {
+                if(sUsrAg.indexOf("Android")>-1){
+                    mobileType="survey_profile_android3runMiniJson";
+                    sBrowser = "Google Chrome On Android";
+                    }else{
+
+                    sBrowser = "Google Chrome or Chromium";
+                }
+
+
+                // "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/66.0.3359.181 Chrome/66.0.3359.181 Safari/537.36"
+                } else if (sUsrAg.indexOf("Safari") > -1) {
+                sBrowser = "Apple Safari";
+                // "Mozilla/5.0 (iPhone; CPU iPhone OS 11_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/11.0 Mobile/15E148 Safari/604.1 980x1306"
+                } else {
+                sBrowser = "unknown";
+            }
+            */
+            //console.log(sBrowser);
+
+            return mobileType;
+        }
+        function updateUSER(x, y) {
+            if (!x || !y) {
+                if (USER.lat && USER.lng) {
+                    y = USER.lat;
+                    x = USER.lng;
+                }
+                if (USER.last_lat && USER.last_lng) {
+                    y = USER.last_lat;
+                    x = USER.last_lng;
+                }
+            }
+            if (!x || !y) {
+                return false;
+            }
+            USER.last_check = new Date().getTime();
+            USER.last_lat = y;
+            USER.last_lng = x;
+            if (isWorkTime()) {
+                DB.db({ database: 'livingon_thaipov_p2', table: 'users' }).update({ id: USER.id, last_lat: y, last_lng: x, last_check: USER.last_check });
+            }
+            GIS.getAdmin({ lat: y, lng: x }, function (a) {
+                if (!USER.last_sub_district || USER.last_sub_district != a.sub_district) {
+                    if (isWorkTime()) {
+                        DB.db({ database: 'livingon_thaipov_p2', table: 'users' }).update({ id: USER.id, last_province: a.province, last_district: a.district, last_sub_district: a.sub_district });
+                    }
+                    USER.last_sub_district = a.sub_district;
+                    USER.last_district = a.district;
+                    USER.last_province = a.province;
+                }
+            });
+        }
+        function LoadMap(c) {
+            if (GIS) {
+                if (c) {
+                    c(GIS);
+                }
+                return GIS;
+            }
+            var gis_option = {
+                title: '',
+                clock: true,
+                home: { x: 100, y: 12, z: 100000 },
+                containerID: 'MapViewer2',
+                top: 42,
+                markable: true,
+                Imagery: 'ESRI World Imagery',
+                kmlLayer: true,
+                //Terrain:'Cesium World Terrain'
+            }
+            GIS = new ALGIS(gis_option);
+            GIS.init();
+            GIS.addLegend({
+                id: 'Terrain', title: 'ภูมิประเทศ', checked: false, change: function () {
+                    $('#Terrain').change(function () {
+                        GIS.viewer.baseLayerPicker.viewModel.selectedTerrain = GIS.viewer.baseLayerPicker.viewModel.terrainProviderViewModels[0];
+                        if ($(this).prop('checked')) {
+                            GIS.viewer.terrainProvider = GIS.viewer.baseLayerPicker.viewModel.terrainProviderViewModels[1].creationCommand();
+                        } else {
+                            GIS.viewer.terrainProvider = GIS.viewer.baseLayerPicker.viewModel.terrainProviderViewModels[0].creationCommand();
+                        }
+                    });
+                }, icon: '../Cesium-1.77/Build/Cesium/Widgets/Images/TerrainProviders/CesiumWorldTerrain.png'
+            });
+            $.each(Modules, function () {
+                if (this.map && !TABLES[this.name]) {
+                    //console.log(this);
+                    //	openTable(this);//เรียก data และ สร้าง dataTable
+                    //console.log("เรียก data และ สร้าง dataTable");
+                }
+            });
+            if (!window.location.hash || window.location.hash != '#map') {
+                GIS.hide();
+            }
+            if (c) {
+                c(GIS);
+            }
+            return GIS;
+        }
+        //remove modal after closed;
+        $('body').on('hidden.bs.modal', '.modal', function () {
+            $(this).remove();
+            $('.modal').css("overflow-x", "hidden");
+            $('.modal').css("overflow-y", "auto");
+        });
+
+        //dblclick for iOS
+        var dbltap = false;
+        window.addEventListener("touchstart", function (e) {
+            if (!dbltap) {
+                dbltap = true;
+                setTimeout(function () {
+                    dbltap = false;
+                }, 300);
+                return false;
+            }
+            $(e.target).dblclick();
+        });
+
+        function panToLocation(id) {
+            LoadMap().panToEntityId(id);
+            window.location.hash = '#map';
+        }
+        function getProvince(id) {
+            if (!id) {
+                return '';
+            }
+            if (Provinces && Provinces[id]) {
+                return Provinces[id].name;
+            }
+        }
+        function getDistrict(id) {
+            if (!id || id.length != 4) {
+                return '';
+            }
+            dbDistricts(id.substring(0, 2), function (ds) {
+                $.each(ds, function () {
+                    if (id == this.id) {
+                        return this.name;
+                    }
+                });
+            });
+        }
+        function getAdrress(d) {
+            if (d.district && d.sub_district && d.province) {
+                return d;
+            }
+            if (d.province_id && !d.province) {
+                if (Provinces) {
+                    d.province = Provinces[d.province_id].name;
+                }
+            }
+            if (d.district_id && d.province_id && !d.district) {
+                if (Districts && Districts[d.province_id]) {
+                    $.each(Districts[d.province_id], function () {
+                        if (d.district_id == this.id) {
+                            d.district = this.name;
+                        }
+                    });
+                } else {
+                    dbDistricts(d.province_id, function (ds) {
+                        $.each(ds, function () {
+                            if (d.district_id == this.id) {
+                                d.district = this.name;
+                            }
+                        });
+                    });
+                }
+            }
+            if (d.sub_district_id && d.district_id && !d.sub_district) {
+                if (SubDistricts && SubDistricts[d.district_id]) {
+                    $.each(Districts[d.district_id], function () {
+                        if (d.sub_district_id == this.id) {
+                            d.sub_district = this.name;
+                        }
+                    });
+                } else {
+                    dbSubDistricts(d.district_id, function (ds) {
+                        $.each(ds, function () {
+                            if (d.sub_district_id == this.id) {
+                                d.sub_district = this.name;
+                            }
+                        });
+                    });
+                }
+            }
+            return d;
+        }</script>
+
+    <!--<script src="modules/geolocation.js"></script>-->
+    <!--<script src="modules/administrative.js"></script>-->
+    <script src="modules/report.js"></script>
+    <script src="modules/marker.js"></script>
+    <script src="modules/poverty_pattani.js"></script>
+    <script src="modules/kml.js"></script>
+    <!--<script src="/js/administrative.js"></script>-->
+    <!--<script>LoadMap(function (map) {
+                map.show();
+    });
+
+        </script>-->
 </body>
 
 </html>
