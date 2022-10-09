@@ -1,0 +1,243 @@
+﻿@page "/fetchdata"
+
+@using MauiBlazorPermissionsExample.Models
+@using MauiBlazorPermissionsExample.Services
+@inject IStudentService StudentService
+@inject NavigationManager NavManager
+<h1>Student List</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (students == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in students)
+                {
+                    @*<tr>
+                        <td>@student.FirstName</td>
+                        <td>@student.LastName</td>
+                        <td>@student.Gender</td>
+                        <td>@student.Email</td>
+                        <td>
+                            <button type="submit" @onclick="@(()=> EditStudent(student.StudentID))" class="btn btn-primary">Edit</button>
+                        </td>
+                        <td>
+                            <button type="submit" @onclick="@(()=> DeleteStudent(student))" class="btn btn-primary">Delete</button>
+                        </td>
+                    </tr>*@
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row" style='border-style: dotted;border-width: 1px'>
+        <div class="col-lg-12  mb-3">
+            <label for="province2">จังหวัด</label>
+            <MatSelect Label="จังหวัด" @bind-Value="@SelectProvinceId" TValue="string" Outlined="true" FullWidth>
+
+                @foreach (var item in provinces1)
+                {
+                    <MatOption TValue="string" Value="@item.province_id">@item.province_name_thai</MatOption>
+                }
+            </MatSelect>
+        </div>
+        <div class="col-lg-12  mb-3">
+            <label for="district2">อำเภอ</label>
+            <MatSelect Label="เลือกอำเภอ" @bind-Value="@SelectDistrictId" TValue="string" Outlined="true" FullWidth>
+                @foreach (var item in districts)
+                {
+                    @*if (item.district_id == recordSurveyProfile.AMP)
+                    {
+                        districtId = item.district_id;
+                    }*@
+                    <MatOption TValue="string" Value="@item.district_id">@item.district_name_thai</MatOption>
+                }
+            </MatSelect>
+            <div class="invalid-feedback">
+
+                กรุณาเลือกอำเภอ
+            </div>
+        </div>
+        <div class="col-lg-12  mb-3">
+            <label for="subdist2">ตำบล </label>
+            <MatSelect Label="เลือกตำบล" @bind-Value="@SelectTambonId" TValue="string" Outlined="true" FullWidth>
+                @foreach (var item in tambons)
+                {
+                    <MatOption TValue="string" Value="@item.tambon_id">@item.tambon_name_thai</MatOption>
+                }
+
+            </MatSelect>
+            <div class="invalid-feedback">
+                กรุณาเลือกตำบล
+            </div>
+        </div>
+    </div>
+
+}
+
+@code {
+    private List<StudentModel> students;
+    List<province> provinces1 = new List<province>();
+    List<district> districts1 = new List<district>();
+    List<district> districts = new List<district>();
+    List<district> districts2 = new List<district>();
+    List<tambon> tambons = new List<tambon>();
+    List<tambon> tambons1 = new List<tambon>();
+    string provinceId;
+    string districtId;
+    string districtId2;
+    private string threatId4 = null;
+    private string threatId5 = null;
+    private string threatId2 = null;
+    private string districtSel = null;
+    private string threatId3 = null;
+    public string tambonId
+    {
+        get { return threatId3; }
+        set
+        {
+            threatId3 = value;
+        }
+    }
+    private string threatId = null;
+
+    public string SelectProvinceId
+    {
+        get { return threatId4; }
+        set
+        {
+            if (value.Substring(0, 1) == "s")
+            {
+                threatId4 = value.Substring(3);
+            }
+            else
+            {
+
+                threatId4 = value;
+
+                SelectThreatValueChanged(value);
+            }
+        }
+    }
+    public string SelectPrenme
+    {
+        get { return threatId5; }
+        set
+        {
+            if (value.Substring(0, 1) == "s")
+            {
+                threatId5 = value.Substring(3);
+            }
+            else
+            {
+
+                threatId5 = value;
+
+                SelectThreatValueChanged(value);
+            }
+        }
+    }
+    public string SelectDistrictId
+    {
+        get { return threatId2; }
+        set
+        {
+            if (value != null && value != "")
+            {
+
+
+                if (value.Substring(0, 1) == "s")
+                {
+                    threatId2 = value.Substring(3);
+                }
+                else if (value == "x")
+                {
+                    threatId2 = "";
+                }
+                else
+                {
+
+                    threatId2 = value;
+                    SelectDistrictValueChanged(value);
+                }
+            }
+
+
+        }
+    }
+    public string SelectTambonId
+    {
+        get { return threatId3; }
+        set
+        {
+
+            threatId3 = value;
+
+
+        }
+    }
+
+
+    private async void SelectDistrictValueChanged(string id)
+    {//https://stackoverflow.com/questions/64802201/blazor-matblazor-how-to-catch-the-value-change-of-matselect-component
+        int proId = Convert.ToInt32(id);
+        if (id != null)
+            tambons = await StudentService.GetTambonByID(id);
+        tambonId = "";
+        StateHasChanged();
+
+
+    }
+    private async void SelectThreatValueChanged(string id)
+    {//https://stackoverflow.com/questions/64802201/blazor-matblazor-how-to-catch-the-value-change-of-matselect-component
+        try
+        {
+            districts = await StudentService.GetDistricByID(id);
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        SelectDistrictId = "x";
+
+        tambons = new List<tambon>();
+        StateHasChanged();
+        //
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = await StudentService.GetAllStudent();
+        provinces1 = await StudentService.GetAllprovince();
+    }
+
+    private void EditStudent(int studentID)
+    {
+        NavManager.NavigateTo($"update_student/{studentID}");
+    }
+
+    private async void DeleteStudent(StudentModel student)
+    {
+        var response = await StudentService.DeleteStudent(student);
+        if (response > 0)
+        {
+            await OnInitializedAsync();
+            this.StateHasChanged();
+        }
+    }
+}

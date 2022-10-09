@@ -43,9 +43,6 @@
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-
-		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
@@ -69,6 +66,56 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\images\" />
+	  <Folder Include="Services\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="MatBlazor" />
+	  <None Remove="sqlite-net-pcl" />
+	  <None Remove="SQLitePCLRaw.bundle_green" />
+	  <None Remove="SQLitePCLRaw.core" />
+	  <None Remove="SQLitePCLRaw.provider.dynamic_cdecl" />
+	  <None Remove="SQLitePCLRaw.provider.sqlite3" />
+	  <None Remove="Syncfusion.Blazor.Buttons" />
+	  <None Remove="Syncfusion.Blazor.Calendars" />
+	  <None Remove="Syncfusion.Blazor.Core" />
+	  <None Remove="Syncfusion.Blazor.Navigations" />
+	  <None Remove="Syncfusion.Blazor.Inputs" />
+	  <None Remove="Syncfusion.Blazor.DropDowns" />
+	  <None Remove="Syncfusion.Blazor.Data" />
+	  <None Remove="Syncfusion.Blazor.Grid" />
+	  <None Remove="Syncfusion.Blazor.Popups" />
+	  <None Remove="Syncfusion.Blazor.TreeGrid" />
+	  <None Remove="Syncfusion.Blazor.Spinner" />
+	  <None Remove="Syncfusion.Blazor.Themes" />
+	  <None Remove="Services\" />
+	  <None Remove="Microsoft.AspNetCore.Components.WebView.Maui" />
+	  <None Remove="Microsoft.Maui.Dependencies" />
+	  <None Remove="Microsoft.Maui.Extensions" />
+	  <None Remove="Newtonsoft.Json" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="MatBlazor" Version="2.8.0" />
+	  <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+	  <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.2" />
+	  <PackageReference Include="SQLitePCLRaw.core" Version="2.1.2" />
+	  <PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.2" />
+	  <PackageReference Include="SQLitePCLRaw.provider.sqlite3" Version="2.1.2" />
+	  <PackageReference Include="Syncfusion.Blazor.Buttons" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Calendars" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Core" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Inputs" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Data" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Grid" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.TreeGrid" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Spinner" Version="20.3.0.48" />
+	  <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.3.0.48" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="6.0.540" />
+	  <PackageReference Include="Microsoft.Maui.Dependencies" Version="6.0.540" />
+	  <PackageReference Include="Microsoft.Maui.Extensions" Version="6.0.540" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
 </Project>
