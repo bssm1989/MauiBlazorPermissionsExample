@@ -1,0 +1,1120 @@
+﻿@page "/profile_1"
+@page "/profile_1/{HC}"
+
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+@inject NavigationManager UriHelper
+@using Syncfusion.Blazor
+@using Syncfusion.Blazor.Spinner
+@using Syncfusion.Blazor.Buttons
+@using MauiBlazorPermissionsExample.Models
+@using MauiBlazorPermissionsExample.Services
+@inject IStudentService StudentService
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Data
+@using Syncfusion.Blazor.Navigations
+@*@inject HttpClient Http*@
+@using System.IO
+@inject IJSRuntime JSRuntime;
+<div>
+    <div id="container">
+        @*<SfSpinner @bind-Visible="@VisibleProperty">
+            </SfSpinner>*@
+    </div>
+</div>
+<style>
+
+    element.style {
+    }
+
+    .e-spinner-pane .e-spinner-inner {
+        top: 5%;
+    }
+</style>
+@code{
+    private bool VisibleProperty { get; set; } = false;
+
+
+}
+<div class="control-section accordion-control-section">
+
+    <SfAccordion ExpandMode="ExpandMode.Single">
+        <AccordionItems>
+            <AccordionItem Header="ประวัติ" IconCss="e-athletics e-acrdn-icons" Expanded=true>
+                <ContentTemplate>
+
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+
+                        <input type='hidden' name='next' value='1'>
+                        <div class="form-group">
+
+                            <SfTextBox CssClass="e-outline" Placeholder="เลขบัตรประชาชน" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.pid" />
+                        </div>
+                        <div class="form-group">
+                            
+                            <div class="control-wrapper">
+
+                                <SfDropDownList TValue="string" TItem="const_prenme" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto" Placeholder="คำนำหน้าชื่อ*" @bind-Value="@recordSurveyProfile.preid" DataSource="@const_prenme1">
+                                    <DropDownListFieldSettings Text="prenme" Value="preid" />
+                                </SfDropDownList>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <SfTextBox CssClass="e-outline" Placeholder="ชื่อ*" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.nme" />
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" Placeholder="นามสกุล*" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.surnme" />
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="วันที่เกิด (วัน/เดือน/ปี)" @bind-Value=" recordSurveyProfile.brtdte" />
+                        </div>
+                        <div class="form-group">
+                            @*<SfTextBox CssClass="e-outline"  FloatLabelType="@FloatLabelType.Auto"  Placeholder="อายุ (ปี)" @bind-Value="recordSurveyProfile.age.ToString()" />*@
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="เพศ" @bind-Value=" recordSurveyProfile.sex" />
+                        </div>
+                        
+                        <div class="control-wrapper">
+
+                            <SfDropDownList TValue="string" TItem="const_reg" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto" Placeholder="ศาสนา*" @bind-Value="@recordSurveyProfile.reg" DataSource="@const_reg1">
+                                <DropDownListFieldSettings Text="regnme" Value="regid" />
+                            </SfDropDownList>
+
+                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+            <AccordionItem Header="สถานภาพ" IconCss="e-water-game e-acrdn-icons">
+                <ContentTemplate>
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        
+                        <div class="control-wrapper">
+
+                            <SfDropDownList TValue="string" TItem="const_stsmar" Placeholder="สถานภาพ" @bind-Value="@recordSurveyProfile.stsmar" DataSource="@const_stsmar1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
+                                <DropDownListFieldSettings Text="stsmarnme" Value="stsmar" />
+                            </SfDropDownList>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="numchi">จำนวนบุตรที่มีชีวิตอยู่</label>
+                            <InputNumber id="numchi" class="form-control" placeholder="จำนวนบุตรที่มีชีวิตอยู่" @bind-Value=" recordSurveyProfile.numchi" />
+                        </div>
+                        <div class="form-group">
+                            <label for="numchistd">จำนวนบุตรที่กำลังเรียนอยู่</label>
+                            <InputNumber id="numchistd" class="form-control" placeholder="จำนวนบุตรที่กำลังเรียนอยู่" @bind-Value=" recordSurveyProfile.numchistd" />
+                        </div>
+                        
+                        
+                        <div class="control-wrapper">
+
+                            <SfDropDownList TValue="string" TItem="const_edulev" Placeholder="ระดับการศึกษาสูงสุด" @bind-Value="@recordSurveyProfile.edulev" DataSource="@const_edulev1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
+                                <DropDownListFieldSettings Text="edulevnme" Value="edulevid" />
+                            </SfDropDownList>
+
+                        </div>
+                        <div class="control-wrapper">
+                            <SfDropDownList TValue="string" TItem="const_currlev" Placeholder="ระดับชั้นการศึกษาปัจจุบัน" @bind-Value="@recordSurveyProfile.currlevid" DataSource="@const_currlev1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
+                                <DropDownListFieldSettings Text="currlevnme" Value="currlevid" />
+                            </SfDropDownList>
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="กรุ๊ปเลือด" @bind-Value=" recordSurveyProfile.blood_type" />
+                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+            <AccordionItem Header="อาชีพ" IconCss="e-racing-games e-acrdn-icons">
+                <ContentTemplate>
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />                                                      
+                        <div class="control-wrapper">
+                            <SfDropDownList TValue="string" TItem="const_occ" Placeholder="อาชีพ" @bind-Value="@recordSurveyProfile.occid" DataSource="@const_occ1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
+                                <DropDownListFieldSettings Text="occnme" Value="occid" />
+                            </SfDropDownList>
+                        </div>
+                        <div class="control-wrapper">
+                            <SfDropDownList TValue="string" TItem="const_occ" Placeholder="อาชีพเสริม(ถ้ามี)" @bind-Value="@recordSurveyProfile.add_occid" DataSource="@const_occ1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
+                                <DropDownListFieldSettings Text="occnme" Value="occid" />
+                            </SfDropDownList>
+                        </div>
+                        <div class="form-group">
+                            <label for="sal">รายได้ต่อเดือน(บาท)</label>
+                            <InputNumber id="sal" class="form-control" placeholder="รายได้ต่อเดือน (บาท)" @bind-Value=" recordSurveyProfile.sal" />
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="บ้านเลขที่" @bind-Value=" recordSurveyProfile.roladr" />
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="ถนน ตรอก ซอย" @bind-Value=" recordSurveyProfile.rolvllsoi" />
+                        </div><div class="row" style='border-style: dotted;border-width: 1px'>
+                            <div class="col-lg-12  mb-3">
+                                <label for="province2">จังหวัด</label>
+                                <MatSelect Label="จังหวัด" @bind-Value="@SelectProvinceId" TValue="string" Outlined="true" FullWidth>
+
+                                    @foreach (var item in provinces1)
+                                    {
+                                        <MatOption TValue="string" Value="@item.province_id">@item.province_name_thai</MatOption>
+                                    }
+                                </MatSelect>
+                            </div>
+                            <div class="col-lg-12  mb-3">
+                                <label for="district2">อำเภอ</label>
+                                <MatSelect Label="เลือกอำเภอ" @bind-Value="@SelectDistrictId" TValue="string" Outlined="true" FullWidth>
+                                    @foreach (var item in districts)
+                                    {
+                                        if (item.district_id.ToString() == recordSurveyProfile.AMP)
+                                        {
+                                            districtId = item.district_id.ToString();
+                                        }
+                                        <MatOption TValue="string" Value="@item.district_id">@item.district_name_thai</MatOption>
+                                    }
+                                </MatSelect>
+                                <div class="invalid-feedback">
+
+                                    กรุณาเลือกอำเภอ
+                                </div>
+                            </div>
+                            <div class="col-lg-12  mb-3">
+                                <label for="subdist2">ตำบล </label>
+                                <MatSelect Label="เลือกตำบล" @bind-Value="@SelectTambonId" TValue="string" Outlined="true" FullWidth>
+                                    @foreach (var item in tambons)
+                                    {
+                                        <MatOption TValue="string" Value="@item.tambon_id">@item.tambon_name_thai</MatOption>
+                                    }
+
+                                </MatSelect>
+                                <div class="invalid-feedback">
+                                    กรุณาเลือกตำบล
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group"><label for="vll2">หมู่บ้าน</label><InputText id="vll2" class="form-control" placeholder="หมู่บ้าน" @bind-Value=" recordSurveyProfile.HC" />                             </div>
+                        <div class="form-group"><label for="tel">เบอร์โทรศัพท์</label><InputText id="tel" class="form-control" placeholder="เบอร์โทรศัพท์" @bind-Value=" recordSurveyProfile.tel" />                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+            <AccordionItem Header="ข้อมูลเชิงพื้นที่" IconCss="e-indoor-games e-acrdn-icons">
+                <ContentTemplate>
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <br><h3>ข้อมูลเชิงพื้นที่</h3>
+                      
+
+                        <div class="row" style='border-style: dotted;border-width: 1px'>
+                            <div class="col-lg-12  mb-3">
+                                <div class="form-group"><label for="lat">พิกัดบ้านละติจูด</label><InputText id="lat" class="form-control" placeholder="พิกัดบ้าน ละติจูด" @bind-Value=" recordSurveyProfile.lat" />                      </div>
+                                <div class="form-group"><label for="lon">พิกัดบ้านลองจิจูด</label><InputText id="lon" class="form-control" placeholder="พิกัดบ้าน ลองจิจูด" @bind-Value=" recordSurveyProfile.lon" />                     </div>
+                                <button class="btn btn-primary my-3">Current Location</button>
+                            </div>
+                        </div>
+                        <div class="form-group"><label for="house_conid">สภาพบ้าน</label><InputText id="house_conid" class="form-control" placeholder="สภาพบ้าน" @bind-Value=" recordSurveyProfile.house_conid" />           </div>
+                        <div class="row" style='border-style: dotted;border-width: 1px'>
+                            <div class="col-lg-12  mb-3">
+                                <label for="pic">รูป (ขนาดรูปห้ามเกิน 400K)</label>
+                                @*<InputFile OnChange="OnInputFileChange"></InputFile>*@
+                            </div><div class="col-lg-12  mb-3">
+                                <div style='display:table-cell' align='right'>คำอธิบายรูป : </div>
+                                <div style='display:table-cell'><textarea name='detail' class="form-control"></textarea></div>
+                            </div>
+
+
+                            <br><br>
+
+                            <img src="@imageDataurl" />
+
+                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+            <AccordionItem Header="ข้อมูลด้านสุขภาพ" IconCss="e-indoor-games e-acrdn-icons">
+                <ContentTemplate>
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <h3>ข้อมูลด้านสุขภาพ</h3>
+                        <div class="row" style="border-style: dotted;border-width: 1px;">
+
+
+                            <div class="col-lg-12  mb-3">
+
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease1" Label="1.ความดันโลหิตสูง"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease2" Label="2.เบาหวาน"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease3" Label="3.โรคหัวใจ"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease4" Label="4.อัมพฤกษ์/อัมพาต"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease5" Label="5.โรคปอด/หอบหืด"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease6" Label="6.โรคมะเร็ง"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease7" Label="7.เก๊าท์/ข้อเสื่อม"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease8" Label="8.อัลไซเมอร์/สมองเสื่อม"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease9" Label="9.มีอาการทางจิตเวช"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease11" Label="10.โรคอ้วน"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease12" Label="11.โรคสมองและหลอดเลือด"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease13" Label="12.อื่นๆ ระบุ"></MatCheckbox>
+                                <h3> สิทธิการรักษาพยาบาล</h3>
+
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease_oth1" Label="1.บัตรทอง"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease_oth2" Label="2.ประกันชีวิต"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease_oth3" Label="3.ประกันสังคม"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease_oth4" Label="4.เบิกต้นสังกัด"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease_oth5" Label="5.จ่ายเอง"></MatCheckbox>
+                                <MatCheckbox @bind-Value="@checkedCongenital_disease_oth6" Label="6.อื่นๆ ระบุ"></MatCheckbox>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="medical_permis_office">สถานที่รักษา</label>
+                            <InputText id="medical_permis_office" class="form-control" placeholder="สถานที่รักษา" @bind-Value=" recordSurveyProfile.medical_permis_office" />
+                        </div>
+                        <div class="form-group">
+                            <label for="vaccination_id">การรับวัคซีน</label>
+                            <MatSelect Label="การรับวัคซีน" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+                                @foreach (var item in const_vaccination1)
+                                {<MatOption TValue="string" Value="@item.vaccination_id">@item.vaccination_nme</MatOption>}
+                            </MatSelect>
+                        </div>
+                        <div class="form-group">
+                            <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="ท่านเคยติดโรคโควิด (COVID-19) กี่ครั้ง" @bind-Value=" recordSurveyProfile.num_covid" />
+                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+            <AccordionItem Header="ข้อมูลกลุ่มเปราะบาง" IconCss="e-indoor-games e-acrdn-icons">
+                <ContentTemplate>
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <h3> ข้อมูลกลุ่มเปราะบาง</h3>
+                        <div class="form-group">
+                            <label for="pertypid">ประเภทกลุ่มเปราะบาง</label>
+                            <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.pertypid" TValue="string" Outlined="true" FullWidth>
+                                @foreach (var item in const_pertyp1)
+                                {<MatOption TValue="string" Value="@item.pertypid">@item.pertypnme</MatOption>}
+                            </MatSelect>
+                        </div>
+                        <div class="form-group">
+                            <label for="elderly_grpid">ผู้สูงอายุจัดอยู่ในกลุ่ม</label>
+                            <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+                                @foreach (var item in const_elderly_grp1)
+                                {<MatOption TValue="string" Value="@item.elderly_grpid">@item.elderly_grpid</MatOption>}
+                            </MatSelect>
+                        </div>
+                        <div class="form-group">
+                            <label for="distypid">ประเภทความพิการและลักษณะความพิการ (ที่ระบุในบัตร)</label>
+                            <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+                                @foreach (var item in const_disability_type1)
+                                {<MatOption TValue="string" Value="@item.distypid">@item.distypnme</MatOption>}
+                            </MatSelect>
+                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+            <AccordionItem Header="ข้อมูลผู้ดูแล" IconCss="e-indoor-games e-acrdn-icons">
+                <ContentTemplate>
+                    <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <h3> ข้อมูลผู้ดูแล</h3>
+                        <InputText id="optid" class="form-control" placeholder="แหล่งข้อมูล สังกัด อปท." @bind-Value=" recordSurveyProfile.optid" />
+                        <MatRadioGroup @bind-Value="@Val1" TValue="string">
+                            <MatRadioButton Value="@("f")" Label="ระบุไม่ได้" TValue="string"></MatRadioButton>
+                            <MatRadioButton Value="@("f")" Label="มีชีวิตอยู่" TValue="string"></MatRadioButton>
+                            <MatRadioButton Value="@("f")" Label="เสียชีวิตแล้ว" TValue="string"></MatRadioButton>
+                        </MatRadioGroup>
+                        <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="หมายเหตุ    " @bind-Value=" recordSurveyProfile.medical_permis_oth" />
+                        <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="โทรศัพท์" @bind-Value=" recordSurveyProfile.main_attendant_tel" />
+                        <br>
+                        <div class="row">
+                            <div class="col-lg-12  mb-3">
+
+                                <MatButton Raised="true" type="submit">บันทึก @complete</MatButton>
+                                @*@{var txtLink = "surveya1/" + @HC;}
+                                    <MatButtonLink Href='@txtLink' Raised="true" Style="Default">ถัดไป</MatButtonLink>*@
+
+
+                            </div>
+                        </div>
+                    </EditForm>
+                </ContentTemplate>
+            </AccordionItem>
+        </AccordionItems>
+    </SfAccordion>
+</div>
+<style>
+    @@font-face {
+        font-family: 'acrdn-icons';
+        src: url(data:application/x-font-ttf;charset=utf-8;base64,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) format('truetype');
+        font-weight: normal;
+        font-style: normal;
+    }
+    .example-label {
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .e-acrdn-icons {
+        font-family: 'acrdn-icons';
+        font-size: 16px;
+    }
+
+    .e-acrdn-header-icon {
+        position: relative;
+        top: 4px;
+    }
+
+    .cycle_bmx::before {
+        content: "\e702"
+    }
+
+    .javelin::before {
+        content: "\e700";
+    }
+
+    .marathon::before {
+        content: "\e70e";
+    }
+
+    .tennis::before {
+        content: "\e701";
+    }
+
+    .waterpolo::before {
+        content: "\e703";
+    }
+
+    .swimming::before {
+        content: "\e704";
+        position: relative;
+        top: 5px;
+    }
+
+    .discus::before {
+        content: "\e705";
+    }
+
+    .boxing::before {
+        content: "\e706";
+    }
+
+    .rowing::before {
+        content: "\e707";
+    }
+
+    .highjump::before {
+        content: "\e708";
+    }
+
+    .cycle::before {
+        content: "\e70a";
+    }
+
+    .sailing::before {
+        content: "\e70c";
+    }
+
+    .marathan_swim::before {
+        content: "\e70d";
+    }
+
+    .boxing::before {
+        content: "\e706";
+    }
+
+    .dive::before {
+        content: "\e70f";
+    }
+
+    .indoor_swim::before {
+        content: "\e710";
+        position: relative;
+        top: 2px;
+    }
+
+    .badminton::before {
+        content: "\e711";
+    }
+
+    .sync_swim::before {
+        content: "\e713";
+        position: relative;
+        top: 3px;
+    }
+
+    .volleyball::before {
+        content: "\e714";
+    }
+
+    .cycle_mountain::before {
+        content: "\e716";
+    }
+
+    .longjump::before {
+        content: "\e717";
+    }
+
+    .e-athletics::before {
+        content: "\e715";
+    }
+
+    .e-water-game::before {
+        content: "\e70b";
+    }
+
+    .e-racing-games::before {
+        content: "\e712";
+    }
+
+    .e-indoor-games::before {
+        content: "\e709";
+    }
+
+    .e-acrdn-icons:not(.e-icons) {
+        padding: 0 16px 0 0;
+        vertical-align: middle;
+    }
+
+    .e-accordion ul {
+        padding: 0;
+        margin-bottom: 0;
+    }
+
+    .e-accordion li {
+        line-height: 36px;
+        list-style-type: none;
+        text-indent: 16px;
+    }
+
+    .accordion-control-section {
+        margin: 0 10% 0 10%;
+    }
+
+    @@media screen and (max-width: 768px) {
+        .accordion-control-section {
+            margin: 0;
+        }
+    }
+</style>
+<!--<EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <input type='hidden' name='next' value='1'>
+    <div class="form-group">
+        <label for="pid">เลขบัตรประชาชน</label>
+        <InputText id="pid" class="form-control" @bind-Value=" recordSurveyProfile.pid" />
+    </div>
+    <div class="form-group">
+        <label for="preid">คำนำหน้าชื่อ*</label>
+
+        <MatSelect Label="คำนำหน้าชื่อ*" @bind-Value="@recordSurveyProfile.preid" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_prenme1)
+            {
+                <MatOption TValue="string" Value="@item.preid">@item.prenme</MatOption>
+            }
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="nme">ชื่อ*</label>
+        <InputText id="nme" class="form-control" placeholder="ชื่อ*" @bind-Value=" recordSurveyProfile.nme" />
+    </div>
+    <div class="form-group">
+        <label for="surnme">นามสกุล*</label>
+        <InputText id="surnme" class="form-control" placeholder="นามสกุล*" @bind-Value=" recordSurveyProfile.surnme" />
+    </div>
+    <div class="form-group">
+        <label for="brtdte">วันที่เกิด(วัน/เดือน/ปี)</label>
+        <MatDatePicker id="brtdte" class="form-control" placeholder="วันที่เกิด (วัน/เดือน/ปี)" @bind-Value=" recordSurveyProfile.brtdte" />
+    </div>
+    <div class="form-group">
+        <label for="age">อายุ(ปี)</label>
+        <InputNumber id="age" class="form-control" placeholder="อายุ (ปี)" @bind-Value=" recordSurveyProfile.age" />
+    </div>
+    <div class="form-group">
+        <label for="sex">เพศ</label>
+        <InputText id="sex" class="form-control" placeholder="เพศ" @bind-Value=" recordSurveyProfile.sex" />
+    </div>
+    <div class="form-group">
+        <label for="reg">ศาสนา</label>
+
+        <MatSelect Label="ศาสนา" @bind-Value="@recordSurveyProfile.reg" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_reg1)
+            {<MatOption TValue="string" Value="@item.regid">@item.regnme</MatOption>}
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="stsmar">สถานภาพ</label>
+
+        <MatSelect Label="สถานภาพ" @bind-Value="@recordSurveyProfile.stsmar" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_stsmar1)
+            {<MatOption TValue="string" Value="@item.stsmar">@item.stsmarnme</MatOption>}
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="numchi">จำนวนบุตรที่มีชีวิตอยู่</label>
+        <InputNumber id="numchi" class="form-control" placeholder="จำนวนบุตรที่มีชีวิตอยู่" @bind-Value=" recordSurveyProfile.numchi" />
+    </div>
+    <div class="form-group">
+        <label for="numchistd">จำนวนบุตรที่กำลังเรียนอยู่</label>
+        <InputNumber id="numchistd" class="form-control" placeholder="จำนวนบุตรที่กำลังเรียนอยู่" @bind-Value=" recordSurveyProfile.numchistd" />
+    </div>
+    <div class="form-group">
+        <label for="edulev">ระดับการศึกษาสูงสุด</label>
+
+        <MatSelect Label="ระดับการศึกษาสูงสุด" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_edulev1)
+            {<MatOption TValue="string" Value="@item.edulevid">@item.edulevnme</MatOption>}
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="currlevid">ระดับชั้นการศึกษาปัจจุบัน</label>
+        <MatSelect Label="ระดับชั้นการศึกษาปัจจุบัน" @bind-Value="@recordSurveyProfile.currlevid" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_currlev1)
+            {<MatOption TValue="string" Value="@item.currlevid">@item.currlevnme</MatOption>}
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="blood_type">กรุ๊ปเลือด</label>
+        <InputText id="blood_type" class="form-control" placeholder="กรุ๊ปเลือด" @bind-Value=" recordSurveyProfile.blood_type" />
+    </div>
+    <div class="form-group">
+        <label for="occid">อาชีพ</label>
+        <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_occ1)
+            {<MatOption TValue="string" Value="@item.occid">@item.occnme</MatOption>}
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="add_occid">อาชีพเสริม(ถ้ามี)</label>
+        <MatSelect Label="อาชีพเสริม(ถ้ามี)" @bind-Value="@recordSurveyProfile.add_occid" TValue="string" Outlined="true" FullWidth>
+            @foreach (var item in const_occ1)
+            {<MatOption TValue="string" Value="@item.occid">@item.occnme</MatOption>}
+        </MatSelect>
+    </div>
+    <div class="form-group">
+        <label for="sal">รายได้ต่อเดือน(บาท)</label>
+        <InputNumber id="sal" class="form-control" placeholder="รายได้ต่อเดือน (บาท)" @bind-Value=" recordSurveyProfile.sal" />
+    </div>
+    <div class="form-group">
+        <label for="roladr">บ้านเลขที่</label>
+        <InputText id="roladr" class="form-control" placeholder="บ้านเลขที่" @bind-Value=" recordSurveyProfile.roladr" />
+    </div>
+    <div class="form-group">
+        <label for="rolvllsoi">ถนน ตรอก ซอย</label>
+        <InputText id="rolvllsoi" class="form-control" placeholder="ถนน ตรอก ซอย" @bind-Value=" recordSurveyProfile.rolvllsoi" />
+    </div><div class="row" style='border-style: dotted;border-width: 1px'>
+        <div class="col-lg-12  mb-3">
+            <label for="province2">จังหวัด</label>
+            <MatSelect Label="จังหวัด" @bind-Value="@SelectProvinceId" TValue="string" Outlined="true" FullWidth>
+
+                @foreach (var item in provinces1)
+                {
+                    <MatOption TValue="string" Value="@item.province_id">@item.province_name_thai</MatOption>
+                }
+            </MatSelect>
+        </div>
+        <div class="col-lg-12  mb-3">
+            <label for="district2">อำเภอ</label>
+            <MatSelect Label="เลือกอำเภอ" @bind-Value="@SelectDistrictId" TValue="string" Outlined="true" FullWidth>
+                @foreach (var item in districts)
+                {
+                    if (item.district_id.ToString() == recordSurveyProfile.AMP)
+                    {
+                        districtId = item.district_id.ToString();
+                    }
+                    <MatOption TValue="string" Value="@item.district_id">@item.district_name_thai</MatOption>
+                }
+            </MatSelect>
+            <div class="invalid-feedback">
+
+                กรุณาเลือกอำเภอ
+            </div>
+        </div>
+        <div class="col-lg-12  mb-3">
+            <label for="subdist2">ตำบล </label>
+            <MatSelect Label="เลือกตำบล" @bind-Value="@SelectTambonId" TValue="string" Outlined="true" FullWidth>
+                @foreach (var item in tambons)
+                {
+                    <MatOption TValue="string" Value="@item.tambon_id">@item.tambon_name_thai</MatOption>
+                }
+
+            </MatSelect>
+            <div class="invalid-feedback">
+                กรุณาเลือกตำบล
+            </div>
+        </div>
+    </div>
+    <div class="form-group"><label for="vll2">หมู่บ้าน</label><InputText id="vll2" class="form-control" placeholder="หมู่บ้าน" @bind-Value=" recordSurveyProfile.HC" />                             </div>
+    <div class="form-group"><label for="tel">เบอร์โทรศัพท์</label><InputText id="tel" class="form-control" placeholder="เบอร์โทรศัพท์" @bind-Value=" recordSurveyProfile.tel" />                        </div>
+    <br><h3>ข้อมูลเชิงพื้นที่</h3>
+    <div class="row" style='border-style: dotted;border-width: 1px'>
+        <div class="col-lg-12  mb-3">
+            <div class="form-group"><label for="lat">พิกัดบ้านละติจูด</label><InputText id="lat" class="form-control" placeholder="พิกัดบ้าน ละติจูด" @bind-Value=" recordSurveyProfile.lat" />                      </div>
+            <div class="form-group"><label for="lon">พิกัดบ้านลองจิจูด</label><InputText id="lon" class="form-control" placeholder="พิกัดบ้าน ลองจิจูด" @bind-Value=" recordSurveyProfile.lon" />                     </div>
+            <button class="btn btn-primary my-3">Current Location</button>
+        </div>
+    </div>
+    <div class="form-group"><label for="house_conid">สภาพบ้าน</label><InputText id="house_conid" class="form-control" placeholder="สภาพบ้าน" @bind-Value=" recordSurveyProfile.house_conid" />           </div>-->
+@*<div class="form-group"><label for="picname1">รูปภาพบ้าน</label><InputText id="picname1" class="form-control" placeholder="รูปภาพบ้าน" @bind-Value=" recordSurveyProfile.picname1" />                </div>
+    <div class="form-group"><label for="picname2">รูปภาพบ้าน</label><InputText id="picname2" class="form-control" placeholder="รูปภาพบ้าน" @bind-Value=" recordSurveyProfile.picname2" />                </div>*@
+<!--<div class="row" style='border-style: dotted;border-width: 1px'>
+    <div class="col-lg-12  mb-3">
+        <label for="pic">รูป (ขนาดรูปห้ามเกิน 400K)</label>-->
+@*<InputFile OnChange="OnInputFileChange"></InputFile>*@
+<!--</div><div class="col-lg-12  mb-3">
+        <div style='display:table-cell' align='right'>คำอธิบายรูป : </div>
+        <div style='display:table-cell'><textarea name='detail' class="form-control"></textarea></div>
+    </div>
+
+
+    <br><br>
+
+    <img src="@imageDataurl" />
+
+
+
+
+    <br>
+
+</div>
+<br><h3>ข้อมูลด้านสุขภาพ</h3>
+<div class="row" style="border-style: dotted;border-width: 1px;">
+
+
+    <div class="col-lg-12  mb-3">
+
+        <MatCheckbox @bind-Value="@checkedCongenital_disease1" Label="1.ความดันโลหิตสูง"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease2" Label="2.เบาหวาน"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease3" Label="3.โรคหัวใจ"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease4" Label="4.อัมพฤกษ์/อัมพาต"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease5" Label="5.โรคปอด/หอบหืด"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease6" Label="6.โรคมะเร็ง"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease7" Label="7.เก๊าท์/ข้อเสื่อม"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease8" Label="8.อัลไซเมอร์/สมองเสื่อม"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease9" Label="9.มีอาการทางจิตเวช"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease11" Label="10.โรคอ้วน"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease12" Label="11.โรคสมองและหลอดเลือด"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease13" Label="12.อื่นๆ ระบุ"></MatCheckbox>
+        <h3> สิทธิการรักษาพยาบาล</h3>
+
+        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth1" Label="1.บัตรทอง"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth2" Label="2.ประกันชีวิต"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth3" Label="3.ประกันสังคม"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth4" Label="4.เบิกต้นสังกัด"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth5" Label="5.จ่ายเอง"></MatCheckbox>
+        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth6" Label="6.อื่นๆ ระบุ"></MatCheckbox>
+    </div>
+</div>
+<div class="form-group">
+    <label for="medical_permis_office">สถานที่รักษา</label>
+    <InputText id="medical_permis_office" class="form-control" placeholder="สถานที่รักษา" @bind-Value=" recordSurveyProfile.medical_permis_office" />
+</div>
+<div class="form-group">
+    <label for="vaccination_id">การรับวัคซีน</label>
+    <MatSelect Label="การรับวัคซีน" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+        @foreach (var item in const_vaccination1)
+        {<MatOption TValue="string" Value="@item.vaccination_id">@item.vaccination_nme</MatOption>}
+    </MatSelect>
+</div>
+<div class="form-group">
+    <label for="num_covid">ท่านเคยติดโรคโควิด(COVID-19)กี่ครั้ง</label>
+    <InputText id="num_covid" class="form-control" placeholder="ท่านเคยติดโรคโควิด (COVID-19) กี่ครั้ง" @bind-Value=" recordSurveyProfile.num_covid" />
+</div>
+<br />
+<h3> ข้อมูลกลุ่มเปราะบาง</h3>
+<div class="form-group">
+    <label for="pertypid">ประเภทกลุ่มเปราะบาง</label>
+    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.pertypid" TValue="string" Outlined="true" FullWidth>
+        @foreach (var item in const_pertyp1)
+        {<MatOption TValue="string" Value="@item.pertypid">@item.pertypnme</MatOption>}
+    </MatSelect>
+</div>
+<div class="form-group">
+    <label for="elderly_grpid">ท่ผู้สูงอายุจัดอยู่ในกลุ่ม</label>
+    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+        @foreach (var item in const_elderly_grp1)
+        {<MatOption TValue="string" Value="@item.elderly_grpid">@item.elderly_grpid</MatOption>}
+    </MatSelect>
+</div>
+<div class="form-group">
+    <label for="distypid">ประเภทความพิการและลักษณะความพิการ (ที่ระบุในบัตร)</label>
+    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
+        @foreach (var item in const_disability_type1)
+        {<MatOption TValue="string" Value="@item.distypid">@item.distypnme</MatOption>}
+    </MatSelect>
+</div>
+<br />
+<h3> ข้อมูลผู้ดูแล</h3>
+<MatRadioGroup @bind-Value="@Val1" TValue="string">
+    <MatRadioButton Value="@string.Empty" TValue="string">Default</MatRadioButton>
+    <MatRadioButton Value="@("f")" Label="ไม่มีผู้ดูแล" TValue="string"></MatRadioButton>
+    <MatRadioButton Value="@("f")" Label="มีผู้ดูแล-สมาชิกครอบครัว" TValue="string"></MatRadioButton>
+    <MatRadioButton Value="@("f")" Label="มีผู้ดูแล-จ้างคนนอกครอบครัวมาดูแล" TValue="string"></MatRadioButton>
+</MatRadioGroup>
+<div class="form-group">
+    <label for="main_attendant_nme">ชื่อผู้ดูแลหลัก</label>
+    <InputText id="main_attendant_nme" class="form-control" placeholder="ชื่อผู้ดูแลหลัก" @bind-Value=" recordSurveyProfile.main_attendant_nme" />
+</div>
+<div class="form-group">
+    <label for="main_attendant_surnme">ชื่อสกุลผู้ดูแลหลัก</label>
+    <InputText id="main_attendant_surnme" class="form-control" placeholder="ชื่อสกุลผู้ดูแลหลัก" @bind-Value=" recordSurveyProfile.main_attendant_surnme" />
+</div>
+<div class="form-group">
+    <label for="main_attendant_brtdte">วันเดือนปีเกิดผู้ดูแลหลัก</label>
+    <MatDatePicker id="main_attendant_brtdte" class="form-control" placeholder="วันเดือนปีเกิดผู้ดูแลหลัก" @bind-Value=" recordSurveyProfile.main_attendant_brtdte" />
+</div>
+<div class="form-group">
+    <label for="main_attendant_rel">ความสัมพันธ์เกี่ยวข้องกับกลุ่มเปราะบาง</label>
+    <InputText id="main_attendant_rel" class="form-control" placeholder="ความสัมพันธ์ เกี่ยวข้องกับกลุ่มเปราะบาง" @bind-Value=" recordSurveyProfile.main_attendant_rel" />
+</div>
+<div class="form-group">
+    <label for="main_attendant_occid">อาชีพ</label>
+    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.main_attendant_occid" TValue="string" Outlined="true" FullWidth>
+        @foreach (var item in const_occ1)
+        {<MatOption TValue="string" Value="@item.occid">@item.occnme</MatOption>}
+    </MatSelect>
+</div>
+<div class="form-group">
+    <label for="main_attendant_sal">รายได้ต่อเดือน(บาท)</label>
+    <InputNumber id="main_attendant_sal" class="form-control" placeholder="รายได้ต่อเดือน (บาท)" @bind-Value="recordSurveyProfile.main_attendant_sal" />
+</div>
+<div class="form-group">
+    <label for="main_attendant_tel">โทรศัพท์</label>
+    <InputText id="main_attendant_tel" class="form-control" placeholder="โทรศัพท์" @bind-Value=" recordSurveyProfile.main_attendant_tel" />
+</div> <br />
+<h3> ข้อมูลผู้ดูแล</h3>
+<InputText id="optid" class="form-control" placeholder="แหล่งข้อมูล สังกัด อปท." @bind-Value=" recordSurveyProfile.optid" />
+<MatRadioGroup @bind-Value="@Val1" TValue="string">
+    <MatRadioButton Value="@("f")" Label="ระบุไม่ได้" TValue="string"></MatRadioButton>
+    <MatRadioButton Value="@("f")" Label="มีชีวิตอยู่" TValue="string"></MatRadioButton>
+    <MatRadioButton Value="@("f")" Label="เสียชีวิตแล้ว" TValue="string"></MatRadioButton>
+</MatRadioGroup>
+<InputText id="percmm" class="form-control" placeholder="หมายเหตุ    " @bind-Value=" recordSurveyProfile.medical_permis_oth" />
+<InputText id="main_attendant_tel" class="form-control" placeholder="โทรศัพท์" @bind-Value=" recordSurveyProfile.main_attendant_tel" />
+<br>
+<div class="row">
+    <div class="col-lg-12  mb-3">
+
+        <MatButton Raised="true" type="submit">บันทึก @complete</MatButton>-->
+@*@{var txtLink = "surveya1/" + @HC;}
+    <MatButtonLink Href='@txtLink' Raised="true" Style="Default">ถัดไป</MatButtonLink>*@
+
+
+<!--</div>
+    </div>
+</EditForm>-->
+
+@code {
+    [Parameter]
+    public string HC { get; set; }
+    protected string Val1;
+    string complete = "";
+    person recordSurveyProfile = new person();
+    private List<StudentModel> students;
+    List<province> provinces1 = new List<province>();
+    List<district> districts1 = new List<district>();
+    List<district> districts = new List<district>();
+    List<district> districts2 = new List<district>();
+    List<tambon> tambons = new List<tambon>();
+    List<tambon> tambons1 = new List<tambon>();
+    string provinceId;
+    string districtId;
+    string districtId2;
+    private string threatId4 = null;
+    private string threatId5 = null;
+    private string threatId2 = null;
+    private string districtSel = null;
+    private string threatId3 = null;
+    List<const_prenme> const_prenme1 = new List<const_prenme>();
+    List<const_sex> const_sex1 = new List<const_sex>();
+    List<person> person1 = new List<person>();
+    List<const_currlev> const_currlev1 = new List<const_currlev>();
+    List<const_disability_type> const_disability_type1 = new List<const_disability_type>();
+    List<const_edulev> const_edulev1 = new List<const_edulev>();
+    List<const_elderly_grp> const_elderly_grp1 = new List<const_elderly_grp>();
+    List<const_house_conditions> const_house_conditions1 = new List<const_house_conditions>();
+    List<const_occ> const_occ1 = new List<const_occ>();
+    List<const_pertyp> const_pertyp1 = new List<const_pertyp>();
+    List<const_plc> const_plc1 = new List<const_plc>();
+    List<const_plcnmegen> const_plcnmegen1 = new List<const_plcnmegen>();
+    List<const_reg> const_reg1 = new List<const_reg>();
+    List<const_reltyp> const_reltyp1 = new List<const_reltyp>();
+    List<const_school> const_school1 = new List<const_school>();
+    List<const_stsmar> const_stsmar1 = new List<const_stsmar>();
+    List<const_vaccination> const_vaccination1 = new List<const_vaccination>();
+    public bool checkedCongenital_disease1 { get; set; }
+    public bool checkedCongenital_disease2 { get; set; }
+    public bool checkedCongenital_disease3 { get; set; }
+    public bool checkedCongenital_disease4 { get; set; }
+    public bool checkedCongenital_disease5 { get; set; }
+    public bool checkedCongenital_disease6 { get; set; }
+    public bool checkedCongenital_disease7 { get; set; }
+    public bool checkedCongenital_disease8 { get; set; }
+    public bool checkedCongenital_disease9 { get; set; }
+    public bool checkedCongenital_disease11 { get; set; }
+    public bool checkedCongenital_disease12 { get; set; }
+    public bool checkedCongenital_disease13 { get; set; }
+    public bool checkedCongenital_disease_oth1 { get; set; }
+    public bool checkedCongenital_disease_oth2 { get; set; }
+    public bool checkedCongenital_disease_oth3 { get; set; }
+    public bool checkedCongenital_disease_oth4 { get; set; }
+    public bool checkedCongenital_disease_oth5 { get; set; }
+    public bool checkedCongenital_disease_oth6 { get; set; }
+    private string imageString = "";
+    private string imageDataurl = "";
+    person personAdd = new person();
+
+    public string tambonId
+    {
+        get { return threatId3; }
+        set
+        {
+            threatId3 = value;
+        }
+    }
+    private string threatId = null;
+
+    public string SelectProvinceId
+    {
+        get { return threatId4; }
+        set
+        {
+            if (value.Substring(0, 1) == "s")
+            {
+                threatId4 = value.Substring(3);
+            }
+            else
+            {
+
+                threatId4 = value;
+
+                SelectThreatValueChanged(value);
+            }
+        }
+    }
+    public string SelectPrenme
+    {
+        get { return threatId5; }
+        set
+        {
+            if (value.Substring(0, 1) == "s")
+            {
+                threatId5 = value.Substring(3);
+            }
+            else
+            {
+
+                threatId5 = value;
+
+                SelectThreatValueChanged(value);
+            }
+        }
+    }
+    public string SelectDistrictId
+    {
+        get { return threatId2; }
+        set
+        {
+            if (value != null && value != "")
+            {
+
+
+                if (value.Substring(0, 1) == "s")
+                {
+                    threatId2 = value.Substring(3);
+                }
+                else if (value == "x")
+                {
+                    threatId2 = "";
+                }
+                else
+                {
+
+                    threatId2 = value;
+                    SelectDistrictValueChanged(value);
+                }
+            }
+
+
+        }
+    }
+    public string SelectTambonId
+    {
+        get { return threatId3; }
+        set
+        {
+
+            threatId3 = value;
+
+
+        }
+    }
+    
+
+    private async void SelectDistrictValueChanged(string id)
+    {//https://stackoverflow.com/questions/64802201/blazor-matblazor-how-to-catch-the-value-change-of-matselect-component
+        int proId = Convert.ToInt32(id);
+        if (id != null)
+            tambons = await StudentService.GetTambonByID(id);
+        tambonId = "";
+        StateHasChanged();
+
+
+    }
+    private async void SelectThreatValueChanged(string id)
+    {//https://stackoverflow.com/questions/64802201/blazor-matblazor-how-to-catch-the-value-change-of-matselect-component
+        try
+        {
+            districts = await StudentService.GetDistricByID(id);
+        }
+        catch (Exception ex)
+        {
+            var shown = ex;
+        }
+
+        SelectDistrictId = "x";
+
+        tambons = new List<tambon>();
+        StateHasChanged();
+        //
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        this.VisibleProperty = true;
+        try
+        {
+            const_prenme1 = await StudentService.GetAllconst_prenme();
+            const_sex1 = await StudentService.GetAllconst_sex();
+            const_currlev1 = await StudentService.GetAllconst_currlev();
+            const_disability_type1 = await StudentService.GetAllconst_disability_type();
+            const_edulev1 = await StudentService.GetAllconst_edulev();
+            const_elderly_grp1 = await StudentService.GetAllconst_elderly_grp();
+            const_house_conditions1 = await StudentService.GetAllconst_house_conditions();
+            const_occ1 = await StudentService.GetAllconst_occ();
+            const_pertyp1 = await StudentService.GetAllconst_pertyp();
+            const_reg1 = await StudentService.GetAllconst_reg();
+            const_reltyp1 = await StudentService.GetAllconst_reltyp();
+            const_school1 = await StudentService.GetAllconst_school();
+            const_stsmar1 = await StudentService.GetAllconst_stsmar();
+            const_vaccination1 = await StudentService.GetAllconst_vaccination();
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "HC", HC);
+            if (HC != null)
+            {
+
+                person getAllSurPro = await StudentService.GetpersonByHC(HC);
+                //   recordSurveyProfile = getAllSurPro.First();
+                //	semaphonSlim.Wait();
+                //SelectThreatValueChanged(recordSurveyProfile.JUN);
+                //SelectDistrictValueChanged(recordSurveyProfile.AMP);
+                SelectProvinceId = "sel" + recordSurveyProfile.JUN;
+                SelectDistrictId = "sel" + recordSurveyProfile.AMP;
+                SelectTambonId = recordSurveyProfile.TMP;
+            }
+            if (recordSurveyProfile.AMP != null && recordSurveyProfile.AMP != "")
+            {
+
+                districts = await StudentService.GetDistricByID(recordSurveyProfile.JUN);
+
+                tambons = await StudentService.GetTambonByID(recordSurveyProfile.AMP);
+                StateHasChanged();
+
+            }
+
+            provinces1 = await StudentService.GetAllprovince();
+        }
+        catch (Exception ex)
+        {
+            var show = ex;
+        }
+        @*await DBContext.OpenIndexedDb();
+            provinces1 = await DBContext.GetAll<province>("province");
+            districts1 = await DBContext.GetAll<district>("district");
+            tambons1 = await DBContext.GetAll<tambon>("tambon");*@
+
+        this.VisibleProperty = false;
+    }
+    protected async Task HandleValidSubmit(EditContext context)
+    {
+
+        string User = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "name");
+
+        Random r = new Random();
+        int num = r.Next();
+        if (recordSurveyProfile.HC == null || recordSurveyProfile.perid == 0)
+        {
+            recordSurveyProfile.HC = num.ToString();
+            recordSurveyProfile.perid = num;
+        }
+
+        int updateStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+        recordSurveyProfile.JUN = SelectProvinceId;
+        recordSurveyProfile.AMP = SelectDistrictId;
+        recordSurveyProfile.TMP = tambonId;
+        recordSurveyProfile.picname1 = imageString;
+
+
+
+        @*var HCFromInput = configSurvey.HC_random(recordSurveyProfile.HC);
+
+            //recordSurveyProfile.survey_no = HCFromInput;
+            List<person> GetHC = await DBContext.GetByIndex<string, person>("person", recordSurveyProfile.HC, null, "hc", false);
+            if (GetHC.Count != 0)
+            {
+                recordSurveyProfile.upddte = updateStamp;
+                _ = await DBContext.UpdateItems<person>("person", new List<person> { recordSurveyProfile });
+                _ = await DBContext.AddItems<log_file>("log_file", new List<log_file> { new log_file { id = num, username = User, time1 = updateStamp, detail = "แก้ไข" + recordSurveyProfile.HC + "profile" } });
+            }
+            else
+            {
+                recordSurveyProfile.id = num.ToString();
+                await DBContext.AddItems<person>("person", new List<person>() { recordSurveyProfile });
+
+                //update person set create_survey='".date("U")."' where HC='$HC'
+                //districts =await DBContext.GetByIndex<int?,district>("district", proId,0,"province_id",false);
+                var getAll = await DBContext.GetAll<person>("person");
+                List<person> updateSurPro = await DBContext.GetByIndex<string, person>("person", recordSurveyProfile.HC, null, "hc", false);
+                updateSurPro.First().upddte = updateStamp;
+                await DBContext.UpdateItems<person>("person", new List<person> { updateSurPro.First() });
+                //$log="insert into log_file ( id,username,time1,detail) values('','$username','".date("U") ."','เพิ่ม $HC')";
+                await DBContext.AddItems<log_file>("log_file", new List<log_file>{
+            new log_file{
+                id=num,
+                    username=User,
+                    time1=(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
+                    detail="เพิ่ม "+recordSurveyProfile.HC
+            }
+            });
+
+            }
+
+            List<survey_staff> getSurveyStaff = await DBContext.GetAll<survey_staff>("survey_staff");
+            var getStaffBySurveyYear = getSurveyStaff.Where(x => x.HC.Contains(recordSurveyProfile.HC)).ToList();
+            //$query1="insert into survey_staff (HC,survey_year,survey_no,staff) value('$HC','$survey_year','$survey_no','$staff')";
+            if (getStaffBySurveyYear.Count == 0)
+            {
+
+                _ = await DBContext.AddItems<survey_staff>("survey_staff", new List<survey_staff> {
+
+                        new survey_staff
+                        {
+                            //HC =  recordSurveyProfile.HC,
+                            HC =recordSurveyProfile.HC,
+                            survey_year = configSurvey.survey_year,
+                            survey_no = configSurvey.survey_no_num,
+                            staff=User,
+                            ch1_st=(int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds
+
+                        }
+
+                    });
+            }*@
+
+
+        HC = recordSurveyProfile.HC;
+        //$log="insert into log_file ( id,username,time1,detail) values('','$username','".date("U") ."','เพิ่ม $HC')";
+        complete = "เรียบร้อย";
+    }
+
+}
+
