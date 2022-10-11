@@ -733,6 +733,14 @@
     {
         @*var test = context;
             int response = -1;
+
+           var  User = await StudentService.GetAllofc();
+            if (User.Count() > 0)
+            {
+                recordSurveyProfile.savofc =Int16.Parse()!string.IsNullOrEmpty(User.First().ofc_no);
+                userName = User.First().ofc_fname;
+                userStaff = User.First();
+            }
             if (response > 0)
             {
                 response = await StudentService.Addperson(recordSurveyProfile);
@@ -819,8 +827,7 @@
                     });
             }*@@*HC = recordSurveyProfile.HC;
         //$log="insert into log_file ( id,username,time1,detail) values('','$username','".date("U") ."','เพิ่ม $HC')";
-        complete = "เรียบร้อย";*@
-    }
+        complete = "เรียบร้อย";*@     }
 
 }
 

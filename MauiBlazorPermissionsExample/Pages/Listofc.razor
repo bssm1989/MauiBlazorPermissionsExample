@@ -1,0 +1,31 @@
+﻿@page "/listofc"
+@using Syncfusion.Blazor.TreeGrid
+@using Syncfusion.Blazor.Grids
+@using MauiBlazorPermissionsExample.Services
+@inject IStudentService StudentService
+@using MauiBlazorPermissionsExample.Models
+<div style="position:relative; min-height: 1000px;">
+    <SfGrid DataSource="@TreeData" EnableAdaptiveUI="true" AllowPaging="true">
+        <GridColumns>
+            <GridColumn Field=@nameof(ofc.ofc_id) HeaderText="perid" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(ofc.ofc_fname) HeaderText="name"></GridColumn>
+            <GridColumn Field=@nameof(ofc.usrnme) HeaderText="surename" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(ofc.ofc_lname) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
+
+        </GridColumns>
+    </SfGrid>
+</div>
+             
+@code{
+    private List<ofc> TreeData { get; set; }
+    
+    private List<ofc>
+        treeData2 = new List<ofc>     ();
+    protected override async void OnInitialized()
+    {
+        await StudentService.getPersonsByStaff();
+        this.TreeData = await StudentService.GetAllofc();
+        StateHasChanged();
+
+    }
+}
