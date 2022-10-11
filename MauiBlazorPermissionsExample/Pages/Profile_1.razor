@@ -35,6 +35,7 @@
         top: 5%;
     }
 </style>
+
 @code{
     private bool VisibleProperty { get; set; } = false;
 
@@ -56,7 +57,7 @@
                             <SfTextBox CssClass="e-outline" Placeholder="เลขบัตรประชาชน" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.pid" />
                         </div>
                         <div class="form-group">
-                            
+
                             <div class="control-wrapper">
 
                                 <SfDropDownList TValue="string" TItem="const_prenme" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto" Placeholder="คำนำหน้าชื่อ*" @bind-Value="@recordSurveyProfile.preid" DataSource="@const_prenme1">
@@ -81,7 +82,7 @@
                         <div class="form-group">
                             <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="เพศ" @bind-Value=" recordSurveyProfile.sex" />
                         </div>
-                        
+
                         <div class="control-wrapper">
 
                             <SfDropDownList TValue="string" TItem="const_reg" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto" Placeholder="ศาสนา*" @bind-Value="@recordSurveyProfile.reg" DataSource="@const_reg1">
@@ -96,7 +97,7 @@
                 <ContentTemplate>
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
                         <DataAnnotationsValidator />
-                        
+
                         <div class="control-wrapper">
 
                             <SfDropDownList TValue="string" TItem="const_stsmar" Placeholder="สถานภาพ" @bind-Value="@recordSurveyProfile.stsmar" DataSource="@const_stsmar1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
@@ -112,8 +113,8 @@
                             <label for="numchistd">จำนวนบุตรที่กำลังเรียนอยู่</label>
                             <InputNumber id="numchistd" class="form-control" placeholder="จำนวนบุตรที่กำลังเรียนอยู่" @bind-Value=" recordSurveyProfile.numchistd" />
                         </div>
-                        
-                        
+
+
                         <div class="control-wrapper">
 
                             <SfDropDownList TValue="string" TItem="const_edulev" Placeholder="ระดับการศึกษาสูงสุด" @bind-Value="@recordSurveyProfile.edulev" DataSource="@const_edulev1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
@@ -135,7 +136,7 @@
             <AccordionItem Header="อาชีพ" IconCss="e-racing-games e-acrdn-icons">
                 <ContentTemplate>
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
-                        <DataAnnotationsValidator />                                                      
+                        <DataAnnotationsValidator />
                         <div class="control-wrapper">
                             <SfDropDownList TValue="string" TItem="const_occ" Placeholder="อาชีพ" @bind-Value="@recordSurveyProfile.occid" DataSource="@const_occ1" PopupHeight="230px" FloatLabelType="@FloatLabelType.Auto">
                                 <DropDownListFieldSettings Text="occnme" Value="occid" />
@@ -207,7 +208,7 @@
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
                         <DataAnnotationsValidator />
                         <br><h3>ข้อมูลเชิงพื้นที่</h3>
-                      
+
 
                         <div class="row" style='border-style: dotted;border-width: 1px'>
                             <div class="col-lg-12  mb-3">
@@ -326,22 +327,21 @@
                         </MatRadioGroup>
                         <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="หมายเหตุ    " @bind-Value=" recordSurveyProfile.medical_permis_oth" />
                         <SfTextBox CssClass="e-outline" FloatLabelType="@FloatLabelType.Auto" Placeholder="โทรศัพท์" @bind-Value=" recordSurveyProfile.main_attendant_tel" />
-                        <br>
-                        <div class="row">
-                            <div class="col-lg-12  mb-3">
-
-                                <MatButton Raised="true" type="submit">บันทึก @complete</MatButton>
-                                @*@{var txtLink = "surveya1/" + @HC;}
-                                    <MatButtonLink Href='@txtLink' Raised="true" Style="Default">ถัดไป</MatButtonLink>*@
 
 
-                            </div>
-                        </div>
                     </EditForm>
                 </ContentTemplate>
             </AccordionItem>
         </AccordionItems>
     </SfAccordion>
+    <div class="row">
+        <div class="col-lg-12  mb-3">
+
+            <MatButton Raised="true" type="submit">บันทึก @complete</MatButton>
+
+
+        </div>
+    </div>
 </div>
 <style>
     @@font-face {
@@ -350,6 +350,7 @@
         font-weight: normal;
         font-style: normal;
     }
+
     .example-label {
         font-size: 14px;
         margin-bottom: 6px;
@@ -497,313 +498,7 @@
         }
     }
 </style>
-<!--<EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
-    <DataAnnotationsValidator />
 
-    <input type='hidden' name='next' value='1'>
-    <div class="form-group">
-        <label for="pid">เลขบัตรประชาชน</label>
-        <InputText id="pid" class="form-control" @bind-Value=" recordSurveyProfile.pid" />
-    </div>
-    <div class="form-group">
-        <label for="preid">คำนำหน้าชื่อ*</label>
-
-        <MatSelect Label="คำนำหน้าชื่อ*" @bind-Value="@recordSurveyProfile.preid" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_prenme1)
-            {
-                <MatOption TValue="string" Value="@item.preid">@item.prenme</MatOption>
-            }
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="nme">ชื่อ*</label>
-        <InputText id="nme" class="form-control" placeholder="ชื่อ*" @bind-Value=" recordSurveyProfile.nme" />
-    </div>
-    <div class="form-group">
-        <label for="surnme">นามสกุล*</label>
-        <InputText id="surnme" class="form-control" placeholder="นามสกุล*" @bind-Value=" recordSurveyProfile.surnme" />
-    </div>
-    <div class="form-group">
-        <label for="brtdte">วันที่เกิด(วัน/เดือน/ปี)</label>
-        <MatDatePicker id="brtdte" class="form-control" placeholder="วันที่เกิด (วัน/เดือน/ปี)" @bind-Value=" recordSurveyProfile.brtdte" />
-    </div>
-    <div class="form-group">
-        <label for="age">อายุ(ปี)</label>
-        <InputNumber id="age" class="form-control" placeholder="อายุ (ปี)" @bind-Value=" recordSurveyProfile.age" />
-    </div>
-    <div class="form-group">
-        <label for="sex">เพศ</label>
-        <InputText id="sex" class="form-control" placeholder="เพศ" @bind-Value=" recordSurveyProfile.sex" />
-    </div>
-    <div class="form-group">
-        <label for="reg">ศาสนา</label>
-
-        <MatSelect Label="ศาสนา" @bind-Value="@recordSurveyProfile.reg" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_reg1)
-            {<MatOption TValue="string" Value="@item.regid">@item.regnme</MatOption>}
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="stsmar">สถานภาพ</label>
-
-        <MatSelect Label="สถานภาพ" @bind-Value="@recordSurveyProfile.stsmar" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_stsmar1)
-            {<MatOption TValue="string" Value="@item.stsmar">@item.stsmarnme</MatOption>}
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="numchi">จำนวนบุตรที่มีชีวิตอยู่</label>
-        <InputNumber id="numchi" class="form-control" placeholder="จำนวนบุตรที่มีชีวิตอยู่" @bind-Value=" recordSurveyProfile.numchi" />
-    </div>
-    <div class="form-group">
-        <label for="numchistd">จำนวนบุตรที่กำลังเรียนอยู่</label>
-        <InputNumber id="numchistd" class="form-control" placeholder="จำนวนบุตรที่กำลังเรียนอยู่" @bind-Value=" recordSurveyProfile.numchistd" />
-    </div>
-    <div class="form-group">
-        <label for="edulev">ระดับการศึกษาสูงสุด</label>
-
-        <MatSelect Label="ระดับการศึกษาสูงสุด" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_edulev1)
-            {<MatOption TValue="string" Value="@item.edulevid">@item.edulevnme</MatOption>}
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="currlevid">ระดับชั้นการศึกษาปัจจุบัน</label>
-        <MatSelect Label="ระดับชั้นการศึกษาปัจจุบัน" @bind-Value="@recordSurveyProfile.currlevid" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_currlev1)
-            {<MatOption TValue="string" Value="@item.currlevid">@item.currlevnme</MatOption>}
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="blood_type">กรุ๊ปเลือด</label>
-        <InputText id="blood_type" class="form-control" placeholder="กรุ๊ปเลือด" @bind-Value=" recordSurveyProfile.blood_type" />
-    </div>
-    <div class="form-group">
-        <label for="occid">อาชีพ</label>
-        <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_occ1)
-            {<MatOption TValue="string" Value="@item.occid">@item.occnme</MatOption>}
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="add_occid">อาชีพเสริม(ถ้ามี)</label>
-        <MatSelect Label="อาชีพเสริม(ถ้ามี)" @bind-Value="@recordSurveyProfile.add_occid" TValue="string" Outlined="true" FullWidth>
-            @foreach (var item in const_occ1)
-            {<MatOption TValue="string" Value="@item.occid">@item.occnme</MatOption>}
-        </MatSelect>
-    </div>
-    <div class="form-group">
-        <label for="sal">รายได้ต่อเดือน(บาท)</label>
-        <InputNumber id="sal" class="form-control" placeholder="รายได้ต่อเดือน (บาท)" @bind-Value=" recordSurveyProfile.sal" />
-    </div>
-    <div class="form-group">
-        <label for="roladr">บ้านเลขที่</label>
-        <InputText id="roladr" class="form-control" placeholder="บ้านเลขที่" @bind-Value=" recordSurveyProfile.roladr" />
-    </div>
-    <div class="form-group">
-        <label for="rolvllsoi">ถนน ตรอก ซอย</label>
-        <InputText id="rolvllsoi" class="form-control" placeholder="ถนน ตรอก ซอย" @bind-Value=" recordSurveyProfile.rolvllsoi" />
-    </div><div class="row" style='border-style: dotted;border-width: 1px'>
-        <div class="col-lg-12  mb-3">
-            <label for="province2">จังหวัด</label>
-            <MatSelect Label="จังหวัด" @bind-Value="@SelectProvinceId" TValue="string" Outlined="true" FullWidth>
-
-                @foreach (var item in provinces1)
-                {
-                    <MatOption TValue="string" Value="@item.province_id">@item.province_name_thai</MatOption>
-                }
-            </MatSelect>
-        </div>
-        <div class="col-lg-12  mb-3">
-            <label for="district2">อำเภอ</label>
-            <MatSelect Label="เลือกอำเภอ" @bind-Value="@SelectDistrictId" TValue="string" Outlined="true" FullWidth>
-                @foreach (var item in districts)
-                {
-                    if (item.district_id.ToString() == recordSurveyProfile.AMP)
-                    {
-                        districtId = item.district_id.ToString();
-                    }
-                    <MatOption TValue="string" Value="@item.district_id">@item.district_name_thai</MatOption>
-                }
-            </MatSelect>
-            <div class="invalid-feedback">
-
-                กรุณาเลือกอำเภอ
-            </div>
-        </div>
-        <div class="col-lg-12  mb-3">
-            <label for="subdist2">ตำบล </label>
-            <MatSelect Label="เลือกตำบล" @bind-Value="@SelectTambonId" TValue="string" Outlined="true" FullWidth>
-                @foreach (var item in tambons)
-                {
-                    <MatOption TValue="string" Value="@item.tambon_id">@item.tambon_name_thai</MatOption>
-                }
-
-            </MatSelect>
-            <div class="invalid-feedback">
-                กรุณาเลือกตำบล
-            </div>
-        </div>
-    </div>
-    <div class="form-group"><label for="vll2">หมู่บ้าน</label><InputText id="vll2" class="form-control" placeholder="หมู่บ้าน" @bind-Value=" recordSurveyProfile.HC" />                             </div>
-    <div class="form-group"><label for="tel">เบอร์โทรศัพท์</label><InputText id="tel" class="form-control" placeholder="เบอร์โทรศัพท์" @bind-Value=" recordSurveyProfile.tel" />                        </div>
-    <br><h3>ข้อมูลเชิงพื้นที่</h3>
-    <div class="row" style='border-style: dotted;border-width: 1px'>
-        <div class="col-lg-12  mb-3">
-            <div class="form-group"><label for="lat">พิกัดบ้านละติจูด</label><InputText id="lat" class="form-control" placeholder="พิกัดบ้าน ละติจูด" @bind-Value=" recordSurveyProfile.lat" />                      </div>
-            <div class="form-group"><label for="lon">พิกัดบ้านลองจิจูด</label><InputText id="lon" class="form-control" placeholder="พิกัดบ้าน ลองจิจูด" @bind-Value=" recordSurveyProfile.lon" />                     </div>
-            <button class="btn btn-primary my-3">Current Location</button>
-        </div>
-    </div>
-    <div class="form-group"><label for="house_conid">สภาพบ้าน</label><InputText id="house_conid" class="form-control" placeholder="สภาพบ้าน" @bind-Value=" recordSurveyProfile.house_conid" />           </div>-->
-@*<div class="form-group"><label for="picname1">รูปภาพบ้าน</label><InputText id="picname1" class="form-control" placeholder="รูปภาพบ้าน" @bind-Value=" recordSurveyProfile.picname1" />                </div>
-    <div class="form-group"><label for="picname2">รูปภาพบ้าน</label><InputText id="picname2" class="form-control" placeholder="รูปภาพบ้าน" @bind-Value=" recordSurveyProfile.picname2" />                </div>*@
-<!--<div class="row" style='border-style: dotted;border-width: 1px'>
-    <div class="col-lg-12  mb-3">
-        <label for="pic">รูป (ขนาดรูปห้ามเกิน 400K)</label>-->
-@*<InputFile OnChange="OnInputFileChange"></InputFile>*@
-<!--</div><div class="col-lg-12  mb-3">
-        <div style='display:table-cell' align='right'>คำอธิบายรูป : </div>
-        <div style='display:table-cell'><textarea name='detail' class="form-control"></textarea></div>
-    </div>
-
-
-    <br><br>
-
-    <img src="@imageDataurl" />
-
-
-
-
-    <br>
-
-</div>
-<br><h3>ข้อมูลด้านสุขภาพ</h3>
-<div class="row" style="border-style: dotted;border-width: 1px;">
-
-
-    <div class="col-lg-12  mb-3">
-
-        <MatCheckbox @bind-Value="@checkedCongenital_disease1" Label="1.ความดันโลหิตสูง"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease2" Label="2.เบาหวาน"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease3" Label="3.โรคหัวใจ"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease4" Label="4.อัมพฤกษ์/อัมพาต"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease5" Label="5.โรคปอด/หอบหืด"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease6" Label="6.โรคมะเร็ง"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease7" Label="7.เก๊าท์/ข้อเสื่อม"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease8" Label="8.อัลไซเมอร์/สมองเสื่อม"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease9" Label="9.มีอาการทางจิตเวช"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease11" Label="10.โรคอ้วน"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease12" Label="11.โรคสมองและหลอดเลือด"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease13" Label="12.อื่นๆ ระบุ"></MatCheckbox>
-        <h3> สิทธิการรักษาพยาบาล</h3>
-
-        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth1" Label="1.บัตรทอง"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth2" Label="2.ประกันชีวิต"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth3" Label="3.ประกันสังคม"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth4" Label="4.เบิกต้นสังกัด"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth5" Label="5.จ่ายเอง"></MatCheckbox>
-        <MatCheckbox @bind-Value="@checkedCongenital_disease_oth6" Label="6.อื่นๆ ระบุ"></MatCheckbox>
-    </div>
-</div>
-<div class="form-group">
-    <label for="medical_permis_office">สถานที่รักษา</label>
-    <InputText id="medical_permis_office" class="form-control" placeholder="สถานที่รักษา" @bind-Value=" recordSurveyProfile.medical_permis_office" />
-</div>
-<div class="form-group">
-    <label for="vaccination_id">การรับวัคซีน</label>
-    <MatSelect Label="การรับวัคซีน" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
-        @foreach (var item in const_vaccination1)
-        {<MatOption TValue="string" Value="@item.vaccination_id">@item.vaccination_nme</MatOption>}
-    </MatSelect>
-</div>
-<div class="form-group">
-    <label for="num_covid">ท่านเคยติดโรคโควิด(COVID-19)กี่ครั้ง</label>
-    <InputText id="num_covid" class="form-control" placeholder="ท่านเคยติดโรคโควิด (COVID-19) กี่ครั้ง" @bind-Value=" recordSurveyProfile.num_covid" />
-</div>
-<br />
-<h3> ข้อมูลกลุ่มเปราะบาง</h3>
-<div class="form-group">
-    <label for="pertypid">ประเภทกลุ่มเปราะบาง</label>
-    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.pertypid" TValue="string" Outlined="true" FullWidth>
-        @foreach (var item in const_pertyp1)
-        {<MatOption TValue="string" Value="@item.pertypid">@item.pertypnme</MatOption>}
-    </MatSelect>
-</div>
-<div class="form-group">
-    <label for="elderly_grpid">ท่ผู้สูงอายุจัดอยู่ในกลุ่ม</label>
-    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
-        @foreach (var item in const_elderly_grp1)
-        {<MatOption TValue="string" Value="@item.elderly_grpid">@item.elderly_grpid</MatOption>}
-    </MatSelect>
-</div>
-<div class="form-group">
-    <label for="distypid">ประเภทความพิการและลักษณะความพิการ (ที่ระบุในบัตร)</label>
-    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.edulev" TValue="string" Outlined="true" FullWidth>
-        @foreach (var item in const_disability_type1)
-        {<MatOption TValue="string" Value="@item.distypid">@item.distypnme</MatOption>}
-    </MatSelect>
-</div>
-<br />
-<h3> ข้อมูลผู้ดูแล</h3>
-<MatRadioGroup @bind-Value="@Val1" TValue="string">
-    <MatRadioButton Value="@string.Empty" TValue="string">Default</MatRadioButton>
-    <MatRadioButton Value="@("f")" Label="ไม่มีผู้ดูแล" TValue="string"></MatRadioButton>
-    <MatRadioButton Value="@("f")" Label="มีผู้ดูแล-สมาชิกครอบครัว" TValue="string"></MatRadioButton>
-    <MatRadioButton Value="@("f")" Label="มีผู้ดูแล-จ้างคนนอกครอบครัวมาดูแล" TValue="string"></MatRadioButton>
-</MatRadioGroup>
-<div class="form-group">
-    <label for="main_attendant_nme">ชื่อผู้ดูแลหลัก</label>
-    <InputText id="main_attendant_nme" class="form-control" placeholder="ชื่อผู้ดูแลหลัก" @bind-Value=" recordSurveyProfile.main_attendant_nme" />
-</div>
-<div class="form-group">
-    <label for="main_attendant_surnme">ชื่อสกุลผู้ดูแลหลัก</label>
-    <InputText id="main_attendant_surnme" class="form-control" placeholder="ชื่อสกุลผู้ดูแลหลัก" @bind-Value=" recordSurveyProfile.main_attendant_surnme" />
-</div>
-<div class="form-group">
-    <label for="main_attendant_brtdte">วันเดือนปีเกิดผู้ดูแลหลัก</label>
-    <MatDatePicker id="main_attendant_brtdte" class="form-control" placeholder="วันเดือนปีเกิดผู้ดูแลหลัก" @bind-Value=" recordSurveyProfile.main_attendant_brtdte" />
-</div>
-<div class="form-group">
-    <label for="main_attendant_rel">ความสัมพันธ์เกี่ยวข้องกับกลุ่มเปราะบาง</label>
-    <InputText id="main_attendant_rel" class="form-control" placeholder="ความสัมพันธ์ เกี่ยวข้องกับกลุ่มเปราะบาง" @bind-Value=" recordSurveyProfile.main_attendant_rel" />
-</div>
-<div class="form-group">
-    <label for="main_attendant_occid">อาชีพ</label>
-    <MatSelect Label="อาชีพ" @bind-Value="@recordSurveyProfile.main_attendant_occid" TValue="string" Outlined="true" FullWidth>
-        @foreach (var item in const_occ1)
-        {<MatOption TValue="string" Value="@item.occid">@item.occnme</MatOption>}
-    </MatSelect>
-</div>
-<div class="form-group">
-    <label for="main_attendant_sal">รายได้ต่อเดือน(บาท)</label>
-    <InputNumber id="main_attendant_sal" class="form-control" placeholder="รายได้ต่อเดือน (บาท)" @bind-Value="recordSurveyProfile.main_attendant_sal" />
-</div>
-<div class="form-group">
-    <label for="main_attendant_tel">โทรศัพท์</label>
-    <InputText id="main_attendant_tel" class="form-control" placeholder="โทรศัพท์" @bind-Value=" recordSurveyProfile.main_attendant_tel" />
-</div> <br />
-<h3> ข้อมูลผู้ดูแล</h3>
-<InputText id="optid" class="form-control" placeholder="แหล่งข้อมูล สังกัด อปท." @bind-Value=" recordSurveyProfile.optid" />
-<MatRadioGroup @bind-Value="@Val1" TValue="string">
-    <MatRadioButton Value="@("f")" Label="ระบุไม่ได้" TValue="string"></MatRadioButton>
-    <MatRadioButton Value="@("f")" Label="มีชีวิตอยู่" TValue="string"></MatRadioButton>
-    <MatRadioButton Value="@("f")" Label="เสียชีวิตแล้ว" TValue="string"></MatRadioButton>
-</MatRadioGroup>
-<InputText id="percmm" class="form-control" placeholder="หมายเหตุ    " @bind-Value=" recordSurveyProfile.medical_permis_oth" />
-<InputText id="main_attendant_tel" class="form-control" placeholder="โทรศัพท์" @bind-Value=" recordSurveyProfile.main_attendant_tel" />
-<br>
-<div class="row">
-    <div class="col-lg-12  mb-3">
-
-        <MatButton Raised="true" type="submit">บันทึก @complete</MatButton>-->
-@*@{var txtLink = "surveya1/" + @HC;}
-    <MatButtonLink Href='@txtLink' Raised="true" Style="Default">ถัดไป</MatButtonLink>*@
-
-
-<!--</div>
-    </div>
-</EditForm>-->
 
 @code {
     [Parameter]
@@ -950,7 +645,7 @@
 
         }
     }
-    
+
 
     private async void SelectDistrictValueChanged(string id)
     {//https://stackoverflow.com/questions/64802201/blazor-matblazor-how-to-catch-the-value-change-of-matselect-component
@@ -1036,8 +731,22 @@
     }
     protected async Task HandleValidSubmit(EditContext context)
     {
+        @*var test = context;
+            int response = -1;
+            if (response > 0)
+            {
+                response = await StudentService.Addperson(recordSurveyProfile);
+                //update record
+            }
+            else
+            {
+                response = await StudentService.Addperson(recordSurveyProfile);
+                //add record
+            }*@
 
-        string User = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "name");
+
+
+@*string User = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "name");
 
         Random r = new Random();
         int num = r.Next();
@@ -1051,11 +760,11 @@
         recordSurveyProfile.JUN = SelectProvinceId;
         recordSurveyProfile.AMP = SelectDistrictId;
         recordSurveyProfile.TMP = tambonId;
-        recordSurveyProfile.picname1 = imageString;
+        recordSurveyProfile.picname1 = imageString;*@          ///////////////////////////////////////////
 
 
 
-        @*var HCFromInput = configSurvey.HC_random(recordSurveyProfile.HC);
+@*var HCFromInput = configSurvey.HC_random(recordSurveyProfile.HC);
 
             //recordSurveyProfile.survey_no = HCFromInput;
             List<person> GetHC = await DBContext.GetByIndex<string, person>("person", recordSurveyProfile.HC, null, "hc", false);
@@ -1108,12 +817,9 @@
                         }
 
                     });
-            }*@
-
-
-        HC = recordSurveyProfile.HC;
+            }*@@*HC = recordSurveyProfile.HC;
         //$log="insert into log_file ( id,username,time1,detail) values('','$username','".date("U") ."','เพิ่ม $HC')";
-        complete = "เรียบร้อย";
+        complete = "เรียบร้อย";*@
     }
 
 }
