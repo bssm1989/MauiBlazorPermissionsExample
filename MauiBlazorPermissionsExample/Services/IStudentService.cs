@@ -11,7 +11,9 @@ namespace MauiBlazorPermissionsExample.Services
     {
         Task<List<StudentModel>> GetAllStudent();
         Task<StudentModel> GetStudentByID(int StudentID);
+
         Task<int> AddStudent(StudentModel studentModel);
+        Task<int> Addperson(person person);
         Task<int> UpdateStudent(StudentModel studentModel);
         Task<int> DeleteStudent(StudentModel studentModel);
         Task<int> syncProvinceAsync();
