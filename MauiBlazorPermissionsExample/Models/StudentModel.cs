@@ -191,10 +191,9 @@ namespace MauiBlazorPermissionsExample.Models
         public string vaccination_nme { get; set; }
 
     }
-    public class
-        person
+    public class  person
     {
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int perid { get; set; }
         public string HC { get; set; }
         public string JUN { get; set; }

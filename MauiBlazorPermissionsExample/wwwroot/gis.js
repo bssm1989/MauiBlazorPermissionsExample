@@ -1109,6 +1109,37 @@ var ALGIS = function (options) {
 		}
 		$$.pinMoving(pin, c);
 	}
+	this.Marking2 = function (o) {
+		o.width = 42;
+		o.height = 42;
+		o.icon = $$.markerIcon;
+		o.name = "Marker";
+		var p = {
+			name: o.name,
+			id: o.id,
+			extentDescription:
+				// '<style>    .select {        position: relative;        display: inline-block;        margin-bottom: 15px;        width: 100%;    }    .select select {            font-family: "Arial";            display: inline-block;            width: 100%;            cursor: pointer;            padding: 10px 21px;            outline: 0;            border: 0px solid #000000;            border-radius: 0px;            background: #e6e6e6;            color: #7b7b7b;            appearance: none;            -webkit-appearance: none;            -moz-appearance: none;        }            .select select::-ms-expand {                display: none;            }            .select select:hover,            .select select:focus {                color: #000000;                background: #cccccc;            }            .select select:disabled {                opacity: 0.5;                pointer-events: none;            }    .select_arrow {        position: absolute;        top: 16px;        right: 15px;        pointer-events: none;        border-style: solid;        border-width: 8px 5px 0px 5px;        border-color: #7b7b7b transparent transparent transparent;    }    .select select:hover ~ .select_arrow,    .select select:focus ~ .select_arrow {        border-top-color: #000000;    }    .select select:disabled ~ .select_arrow {        border-top-color: #cccccc;    }</style><div class="select">  '+  
+				// '<select id="typeSelete">'+
+				// '<option>--ประเภท--</option>'+
+				// '<option  value="flood">แจ้งน้ำท่วม</option>'+
+				// '<option  value="wind">แจ้งลม</option>'+
+				// '<option  value="rain">แจ้งฝน</option>'+
+				// '<option  value="wave">แจ้งคลื่นทะเล</option>'+
+				// '</select>    <div class="select_arrow">    </div></div>' +
+				// "" +
+				'<div style="padding: 5px;"><span id="marker_remove" class="zmdi zmdi-delete" style="font-size:24px;cursor:pointer;float: right;padding:16px;" aria-hidden="true" title="ลบ."></span>' +
+				'<span id="marker_save2" class="zmdi zmdi-floppy" style="font-size:24px;cursor:pointer;float: right;padding:16px;" aria-hidden="true" title="บันทึกเป็น"></span></div>',
+			billboard: {
+				image: o.icon,
+				width: o.width,
+				height: o.height,
+				verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+			},
+		};
+		p.position = $$.setPosition(o, p);
+		var pin = $$.viewer.entities.add(p);
+		$$.pinMoving(pin);
+	};  
 	this.Marking = function (o, c) {
 		if (!o) {
 			$$.removeEntityById('Marker');
