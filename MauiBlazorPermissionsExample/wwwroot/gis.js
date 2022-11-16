@@ -8,15 +8,15 @@ var ALGIS = function (options) {
 		z: $$.options && $$.options.home && $$.options.home.z ? $$.options.home.z : 10000000
 	}
 	this.init = function () {
-		if (!$('#MapViewer2').length > 0) {
-			setTimeout(function () {
-				$$.init();
-			}, 1);
-			return false;
-		}
-		if ($$.containerID) {
-			return false;
-		}
+		//if (!$('#MapViewer2').length > 0) {
+		//	setTimeout(function () {
+		//		$$.init();
+		//	}, 1);
+		//	return false;
+		//}
+		//if ($$.containerID) {
+		//	return false;
+		//}
 		//debugger;
 		$$.containerID = $$.options && $$.options.containerID ? $$.options.containerID : 'ALGISContainer';
 		Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMTM3MWFjMy01YjMwLTRiOTQtOWYzMy02YjIyNjcwM2Y5YjgiLCJpZCI6MTE4NDYsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTk4MjAyMTB9.cAenIn_UCizYjN4_sRr6Q_iI3NwIJdFagOFf9qSb-_g';
