@@ -8,15 +8,15 @@ var ALGIS = function (options) {
 		z: $$.options && $$.options.home && $$.options.home.z ? $$.options.home.z : 10000000
 	}
 	this.init = function () {
-		//if (!$('#MapViewer2').length > 0) {
-		//	setTimeout(function () {
-		//		$$.init();
-		//	}, 1);
-		//	return false;
-		//}
-		//if ($$.containerID) {
-		//	return false;
-		//}
+		if (!$('#MapViewer2').length > 0) {
+			setTimeout(function () {
+				$$.init();
+			}, 1);
+			return false;
+		}
+		if ($$.containerID) {
+			return false;
+		}
 		//debugger;
 		$$.containerID = $$.options && $$.options.containerID ? $$.options.containerID : 'ALGISContainer';
 		Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMTM3MWFjMy01YjMwLTRiOTQtOWYzMy02YjIyNjcwM2Y5YjgiLCJpZCI6MTE4NDYsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NTk4MjAyMTB9.cAenIn_UCizYjN4_sRr6Q_iI3NwIJdFagOFf9qSb-_g';
@@ -288,7 +288,7 @@ var ALGIS = function (options) {
 				check: true
 			}
 		];
-		
+
 		//$$.viewer.scene.mode= Cesium.SceneMode.SCENE2D;
 		$$.infoBox = $('.cesium-infoBox');
 		$$.container = $($$.viewer.container);
@@ -602,113 +602,113 @@ var ALGIS = function (options) {
 		});
 		$$.GeoLocation = navigator.geolocation || window.navigator.geolocation;
 		var ex = 0.02;
-		if($$.GeoLocation){
-			function blink(p){
-				if(p.color == 2){
+		if ($$.GeoLocation) {
+			function blink(p) {
+				if (p.color == 2) {
 					p.color = 1;
-					p.point.outlineWidth=25;
-					p.point.pixelSize=10;
+					p.point.outlineWidth = 25;
+					p.point.pixelSize = 10;
 				} else {
 					p.color = 2;
-					p.point.outlineWidth=20;
-					p.point.pixelSize=12;
+					p.point.outlineWidth = 20;
+					p.point.pixelSize = 12;
 				}
-				setTimeout(function(){
+				setTimeout(function () {
 					blink(p);
-				},500);
+				}, 500);
 			}
-			function _success(p){
+			function _success(p) {
 				var x = parseFloat((p.coords.longitude).toFixed(6));
 				var y = parseFloat((p.coords.latitude).toFixed(6));
-				if(y == 15.870032 && x == 100.992541){
+				if (y == 15.870032 && x == 100.992541) {
 					y = '';
 					x = '';
-					if(USER.lat && USER.lng){
+					if (USER.lat && USER.lng) {
 						x = parseFloat(USER.lng);
 						y = parseFloat(USER.lat);
 					}
-					if(USER.last_lat && USER.last_lng){
+					if (USER.last_lat && USER.last_lng) {
 						x = parseFloat(USER.last_lng);
 						y = parseFloat(USER.last_lat);
 					}
 				}
-				if(!x || !y){
+				if (!x || !y) {
 					return false;
 				}
 				USER.last_lat = y;
 				USER.last_lng = x;
-				$$.setView(x,y,10000);
-				updateUSER(x,y);
-				Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(x-ex,y-ex,x+ex,y+ex);
+				$$.setView(x, y, 100);
+				updateUSER(x, y);
+				Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(x - ex, y - ex, x + ex, y + ex);
 				Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
 				$$.Location = $$.viewer.entities.add({
-					id:'geolocation',
-					position:Cesium.Cartesian3.fromDegrees(x,y),
-					lat:y,
-					lng:x,
-					name:'ที่อยู่ปัจจุบันของคุณ',
-					info:'<p style="font-size:0.9em;">'+y+','+x+'</p>',
-					description:{
-						getValue:function(){
-							if($('#save_def_location')[0] && !$('#save_def_location').attr('action')){
-								$('#save_def_location').attr('action',1);
-								$('#save_def_location').off().on('click',function(){
+					id: 'geolocation',
+					position: Cesium.Cartesian3.fromDegrees(x, y),
+					lat: y,
+					lng: x,
+					name: 'ที่อยู่ปัจจุบันของคุณ',
+					info: '<p style="font-size:0.9em;">' + y + ',' + x + '</p>',
+					description: {
+						getValue: function () {
+							if ($('#save_def_location')[0] && !$('#save_def_location').attr('action')) {
+								$('#save_def_location').attr('action', 1);
+								$('#save_def_location').off().on('click', function () {
 									$('#save_def_location').prop('disabled', true);
-									DB.db({database:'pbwatchn_volunteer',table:'users'}).update({id:USER.id,lat:$$.Location.lat,lng:$$.Location.lng},function(){
+									DB.db({ database: 'pbwatchn_volunteer', table: 'users' }).update({ id: USER.id, lat: $$.Location.lat, lng: $$.Location.lng }, function () {
 										$$.viewer.selectedEntity = undefined;
 									});
-									setTimeout(function(){
+									setTimeout(function () {
 										$('#save_def_location').prop('disabled', false);
-									},3000);
+									}, 3000);
 								});
 							}
-							if($('#mark_location')[0] && !$('#mark_location').attr('action')){
-								$('#mark_location').attr('action',1);
-								$('#mark_location').off().on('click',function(){
-									setTimeout(function(){
+							if ($('#mark_location')[0] && !$('#mark_location').attr('action')) {
+								$('#mark_location').attr('action', 1);
+								$('#mark_location').off().on('click', function () {
+									setTimeout(function () {
 										$$.viewer.selectedEntity = undefined;
 										$$.Marking({});
-										$('#mapMarking').html('<img src="'+$$.markerIcon+'" >');
-										$('#mapMarking').attr('title','คลิกเพื่อปิดการเพิ่มพิกัดบนแผนที่');
+										$('#mapMarking').html('<img src="' + $$.markerIcon + '" >');
+										$('#mapMarking').attr('title', 'คลิกเพื่อปิดการเพิ่มพิกัดบนแผนที่');
 										$$.Marking({});
-										$$.mark({lat:$$.Location.lat,lng:$$.Location.lng},function(pin){
-											$$.getAdmin(pin.latLng,function(a){
-												if(pin.lat && pin.lng){
-													pin.info = '<p style="font-size:0.9em;">'+pin.lat+','+pin.lng+'</p>';
+										$$.mark({ lat: $$.Location.lat, lng: $$.Location.lng }, function (pin) {
+											$$.getAdmin(pin.latLng, function (a) {
+												if (pin.lat && pin.lng) {
+													pin.info = '<p style="font-size:0.9em;">' + pin.lat + ',' + pin.lng + '</p>';
 												}
-												if(a){
+												if (a) {
 													pin.administrative = a;
-													pin.info = pin.info+'<p style="font-size:0.9em;">ตำบล : '+a.sub_district+'</p>'+
-														'<p style="font-size:0.9em;">อำเภอ : '+a.district+'</p>'+
-														'<p style="font-size:0.9em;">จังหวัด : '+a.province+'</p>';
+													pin.info = pin.info + '<p style="font-size:0.9em;">ตำบล : ' + a.sub_district + '</p>' +
+														'<p style="font-size:0.9em;">อำเภอ : ' + a.district + '</p>' +
+														'<p style="font-size:0.9em;">จังหวัด : ' + a.province + '</p>';
 												}
 											});
 										});
-									},200);
+									}, 200);
 								});
 							}
-							return $$.Location.info+'<p><a style="cursor:help;" href="https://support.google.com/maps/answer/2839911?hl=th" target="_blank">คำแนะนำเพื่อเพิ่มความแม่นยำของ GPS</a></p>';
+							return $$.Location.info + '<p><a style="cursor:help;" href="https://support.google.com/maps/answer/2839911?hl=th" target="_blank">คำแนะนำเพื่อเพิ่มความแม่นยำของ GPS</a></p>';
 						}
 					},
-					color:1,
-					point:{
-						pixelSize:10,
-						color:Cesium.Color.GREEN,
-						outlineColor:Cesium.Color.BLUE.withAlpha(0.2),
-						outlineWidth:25
+					color: 1,
+					point: {
+						pixelSize: 10,
+						color: Cesium.Color.GREEN,
+						outlineColor: Cesium.Color.BLUE.withAlpha(0.2),
+						outlineWidth: 25
 					},
-					extentDescription:'<button id="save_def_location" style="float:right;margin:6px;" class="btn btn-primary">บันทึกเป็นที่อยู่ของคุณ</button><button id="mark_location" style="float:right;margin:6px;" class="btn btn-primary">ปักหมุดตรงนี้</button>'
+					extentDescription: '<button id="save_def_location" style="float:right;margin:6px;" class="btn btn-primary">บันทึกเป็นที่อยู่ของคุณ</button><button id="mark_location" style="float:right;margin:6px;" class="btn btn-primary">ปักหมุดตรงนี้</button>'
 				});
-				$$.getAdmin({lat:y,lng:x},function(a){
-					if(a){
-						$$.Location.info = $$.Location.info+'<p style="font-size:0.9em;">ตำบล : '+a.sub_district+'</p><p style="font-size:0.9em;">อำเภอ : '+a.district+'</p><p style="font-size:0.9em;">จังหวัด : '+a.province+'</p>';
+				$$.getAdmin({ lat: y, lng: x }, function (a) {
+					if (a) {
+						$$.Location.info = $$.Location.info + '<p style="font-size:0.9em;">ตำบล : ' + a.sub_district + '</p><p style="font-size:0.9em;">อำเภอ : ' + a.district + '</p><p style="font-size:0.9em;">จังหวัด : ' + a.province + '</p>';
 					}
 				});
 				blink($$.Location);
 				USER.Location = $$.Location;
 			}
-			function _error(e){
-				if(e.code == 1){
+			function _error(e) {
+				if (e.code == 1) {
 					//navigator.permissions.query({name:'geolocation'}).then(function(result){
 					//   if(result.state == 'denied'){
 					//		var c = 'คุณไม่ได้อนุญาตให้ pbwatch.net แชร์ตำแหน่งของคุณ กรุณา<a style="cursor: help;" href="https://support.google.com/chrome/answer/142065?hl=th" target="_blank">อ่านวิธีแชร์ตำแหน่ง</a>';
@@ -723,30 +723,30 @@ var ALGIS = function (options) {
 					//   }
 					//});
 				} else {
-					$$.GeoLocation.getCurrentPosition(_success,_error);
+					$$.GeoLocation.getCurrentPosition(_success, _error);
 				}
 			}
-			$$.GeoLocation.getCurrentPosition(_success,_error);
-			$$.GeoLocation.watchPosition(function(p){
+			$$.GeoLocation.getCurrentPosition(_success, _error);
+			$$.GeoLocation.watchPosition(function (p) {
 				var x = parseFloat((p.coords.longitude).toFixed(6));
 				var y = parseFloat((p.coords.latitude).toFixed(6));
-				if($$.Location){
-					if(y == 15.870032 && x == 100.992541){
+				if ($$.Location) {
+					if (y == 15.870032 && x == 100.992541) {
 						updateUSER();
 						return false;
 					}
-					if(!USER.last_check || new Date().getTime()-parseInt(USER.last_check)>60000*2){
-						updateUSER(x,y);
+					if (!USER.last_check || new Date().getTime() - parseInt(USER.last_check) > 60000 * 2) {
+						updateUSER(x, y);
 					}
-					if($$.Location.lat!=y || $$.Location.lng!=x){
-						Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(x-ex,y-ex,x+ex,y+ex);
+					if ($$.Location.lat != y || $$.Location.lng != x) {
+						Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(x - ex, y - ex, x + ex, y + ex);
 						$$.Location.lat = y;
 						$$.Location.lng = x;
-						$$.Location.position = Cesium.Cartesian3.fromDegrees(x,y);
-						$$.Location.info = '<p style="font-size:0.9em;">'+y+','+x+'</p>';
-						$$.getAdmin({lat:y,lng:x},function(a){
-							if(a){
-								$$.Location.info = $$.Location.info+'<p style="font-size:0.9em;">ตำบล : '+a.sub_district+'</p><p style="font-size:0.9em;">อำเภอ : '+a.district+'</p><p style="font-size:0.9em;">จังหวัด : '+a.province+'</p>';
+						$$.Location.position = Cesium.Cartesian3.fromDegrees(x, y);
+						$$.Location.info = '<p style="font-size:0.9em;">' + y + ',' + x + '</p>';
+						$$.getAdmin({ lat: y, lng: x }, function (a) {
+							if (a) {
+								$$.Location.info = $$.Location.info + '<p style="font-size:0.9em;">ตำบล : ' + a.sub_district + '</p><p style="font-size:0.9em;">อำเภอ : ' + a.district + '</p><p style="font-size:0.9em;">จังหวัด : ' + a.province + '</p>';
 							}
 						});
 					}
@@ -756,8 +756,8 @@ var ALGIS = function (options) {
 				}
 			});
 		} else {
-			if(USER.lat && USER.lng){
-				Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(USER.lng-ex,USER.lat-ex,USER.lng+ex,USER.lat+ex);
+			if (USER.lat && USER.lng) {
+				Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(USER.lng - ex, USER.lat - ex, USER.lng + ex, USER.lat + ex);
 			}
 			updateUSER();
 		}
@@ -1138,8 +1138,11 @@ var ALGIS = function (options) {
 		};
 		p.position = $$.setPosition(o, p);
 		var pin = $$.viewer.entities.add(p);
-		$$.pinMoving(pin);
-	};  
+		$$.pinMoving(pin, function () {
+			document.getElementById("lat").value = pin.lat;
+			document.getElementById("lon").value = pin.lng;
+		});
+	};
 	this.Marking = function (o, c) {
 		if (!o) {
 			$$.removeEntityById('Marker');

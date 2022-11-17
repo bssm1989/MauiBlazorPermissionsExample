@@ -118,4 +118,11 @@
 	  <PackageReference Include="Microsoft.Maui.Extensions" Version="6.0.540" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
+    <AndroidKeyStore>True</AndroidKeyStore>
+    <AndroidSigningKeyStore>filename.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>filename.keystore password</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>keystore.alias</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>keystore.alias password</AndroidSigningKeyPass>
+</PropertyGroup>
 </Project>

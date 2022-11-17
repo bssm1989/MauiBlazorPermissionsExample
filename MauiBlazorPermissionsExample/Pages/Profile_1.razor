@@ -50,12 +50,17 @@
 
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
                         <DataAnnotationsValidator />
-
+                        <button class="btn btn-primary" @onclick="OnButtonClick">Call C# from JS</button>
                         <input type='hidden' name='next' value='1'>
                         <div class="form-group">
 
                             <SfTextBox CssClass="e-outline" Placeholder="เลขบัตรประชาชน" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.pid" />
                         </div>
+                        <input type="text" @bind="content"/>
+                        @*<div class="form-group">
+
+                            <SfTextBox CssClass="e-outline" Placeholder="content" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" content" />
+                        </div>*@
                         <div class="form-group">
 
                             <div class="control-wrapper">
@@ -66,10 +71,11 @@
 
                             </div>
                         </div>
+
                         <div class="form-group">
 
                             <SfTextBox CssClass="e-outline" Placeholder="ชื่อ*" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.nme" />
-                        </div> 0
+                        </div>
 
                         <div class="form-group">
                             <SfTextBox CssClass="e-outline" Placeholder="นามสกุล*" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.surnme" />
@@ -204,24 +210,28 @@
                     </EditForm>
                 </ContentTemplate>
             </AccordionItem>
-            <AccordionItem Header="ข้อมูลเชิงพื้นที่" IconCss="e-indoor-games e-acrdn-icons">
+            <AccordionItem Header="ข้อมูลเชิงพื้นที่"  IconCss="e-indoor-games e-acrdn-icons">
                 <ContentTemplate>
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
                         <DataAnnotationsValidator />
                         <br><h3>ข้อมูลเชิงพื้นที่</h3>
 
 
-                        <div id="MapViewer2" style="position:relative;width:100%;z-index:10 "></div>
+                        <div id="MapViewer2" style="position: relative; width: 100%; z-index: 10; padding-bottom: 50px; height: 500px; "></div>
                         <div class="row" style='border-style: dotted;border-width: 1px'>
                             <div class="col-lg-12  mb-3">
+
+
+
                                 <div class="form-group"><label for="lat">พิกัดบ้านละติจูด</label><InputText id="lat" class="form-control" placeholder="พิกัดบ้าน ละติจูด" @bind-Value=" recordSurveyProfile.lat" />                      </div>
                                 <div class="form-group"><label for="lon">พิกัดบ้านลองจิจูด</label><InputText id="lon" class="form-control" placeholder="พิกัดบ้าน ลองจิจูด" @bind-Value=" recordSurveyProfile.lon" />                     </div>
                                 <button class="btn btn-primary my-3">Current Location</button>
+
+                                @*<div id="MapViewer2" style="position: relative; width: 100%; z-index: 10"></div>*@
                                 <div class="col-md-6">
                                     <button type="button" class="btn btn-info" @onclick="ShowAlertWindow">Show Alert Window</button>
                                 </div>
-                                <div id="MapViewer2" style="position:relative;width:100%;z-index:10 "></div>
-
+                                <input @ref=button1 id="valuelng"  type="text" @bind-value="recordSurveyProfile.lat" />
                             </div>
 
                         </div>
@@ -514,7 +524,7 @@
     public string HC { get; set; }
     protected string Val1;
     string complete = "";
-    person recordSurveyProfile = new person();
+    private static person recordSurveyProfile = new person();
     private List<StudentModel> students;
     List<province> provinces1 = new List<province>();
     List<district> districts1 = new List<district>();
@@ -568,7 +578,27 @@
     private string imageString = "";
     private string imageDataurl = "";
     person personAdd = new person();
+    private static string content { get; set; }
+    private ElementReference button1;
+    private ElementReference button2;
+    private async Task OnButtonClick()
+    {
+        //("showAlert", "JS function called from .NET");
+        await JSRuntime.InvokeAsync<object>("CStoJSCall");
+    }
+    [JSInvokable]
+    public static void JStoCSCall(string lat,string lng)
+    {
+        // content = DateTime.Now.ToString();
+        recordSurveyProfile.lat = lat;
+        recordSurveyProfile.lon = lng;
+        //await InvokeAsync(StateHasChanged);
+    }
     public async Task ShowAlertWindow()
+    {
+        await JSRuntime.InvokeVoidAsync("showAlert", "JS function called from .NET");
+    }
+    public async Task showMarking()
     {
         await JSRuntime.InvokeVoidAsync("showAlert", "JS function called from .NET");
     }
@@ -740,52 +770,53 @@
             tambons1 = await DBContext.GetAll<tambon>("tambon");*@
 
         this.VisibleProperty = false;
+        await JSRuntime.InvokeVoidAsync("showAlert", "JS function called from .NET");
     }
-        private async void AddStudentRecord()
-{
-            
-            int response = -1;
+    private async void AddStudentRecord()
+    {
 
-            var User = await StudentService.GetAllofc();
-            if (User.Count() > 0)
-            {
-                recordSurveyProfile.savofc = Int16.Parse(User.First().ofc_no);
+        int response = -1;
 
-            }
-            if (response > 0)
-            {
-                response = await StudentService.Addperson(recordSurveyProfile);
-                //update record
-            }
-            else
-            {
-                response = await StudentService.Addperson(recordSurveyProfile);
-                //add record
-            }
-
+        var User = await StudentService.GetAllofc();
+        if (User.Count() > 0)
+        {
+            recordSurveyProfile.savofc = Int16.Parse(User.First().ofc_no);
 
         }
-        protected async Task HandleValidSubmit(EditContext context)
+        if (response > 0)
+        {
+            response = await StudentService.Addperson(recordSurveyProfile);
+            //update record
+        }
+        else
+        {
+            response = await StudentService.Addperson(recordSurveyProfile);
+            //add record
+        }
+
+
+    }
+    protected async Task HandleValidSubmit(EditContext context)
     {
         var test = context;
-            int response = -1;
+        int response = -1;
 
-           var  User = await StudentService.GetAllofc();
-            if (User.Count() > 0)
-            {
-                recordSurveyProfile.savofc =Int16.Parse(User.First().ofc_no);
-                
-            }
-            if (response > 0)
-            {
-                response = await StudentService.Addperson(recordSurveyProfile);
-                //update record
-            }
-            else
-            {
-                response = await StudentService.Addperson(recordSurveyProfile);
-                //add record
-            }
+        var  User = await StudentService.GetAllofc();
+        if (User.Count() > 0)
+        {
+            recordSurveyProfile.savofc =Int16.Parse(User.First().ofc_no);
+
+        }
+        if (response > 0)
+        {
+            response = await StudentService.Addperson(recordSurveyProfile);
+            //update record
+        }
+        else
+        {
+            response = await StudentService.Addperson(recordSurveyProfile);
+            //add record
+        }
 
 
 
