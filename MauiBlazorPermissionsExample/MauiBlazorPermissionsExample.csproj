@@ -93,6 +93,8 @@
 	  <None Remove="Microsoft.Maui.Dependencies" />
 	  <None Remove="Microsoft.Maui.Extensions" />
 	  <None Remove="Newtonsoft.Json" />
+	  <None Remove="System.Data.SQLite.Core" />
+	  <None Remove="Devart.Data.SQLite" />
 	</ItemGroup>
 	<ItemGroup>
 	  <PackageReference Include="MatBlazor" Version="2.8.0" />
@@ -117,12 +119,16 @@
 	  <PackageReference Include="Microsoft.Maui.Dependencies" Version="6.0.540" />
 	  <PackageReference Include="Microsoft.Maui.Extensions" Version="6.0.540" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
 	</ItemGroup>
 	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
     <AndroidKeyStore>True</AndroidKeyStore>
-    <AndroidSigningKeyStore>filename.keystore</AndroidSigningKeyStore>
-    <AndroidSigningStorePass>filename.keystore password</AndroidSigningStorePass>
-    <AndroidSigningKeyAlias>keystore.alias</AndroidSigningKeyAlias>
-    <AndroidSigningKeyPass>keystore.alias password</AndroidSigningKeyPass>
+    <AndroidSigningKeyStore>key2.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>123456</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>key</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>123456</AndroidSigningKeyPass>
 </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
 </Project>

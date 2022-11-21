@@ -25,7 +25,10 @@ namespace MauiBlazorPermissionsExample.Services
         {
             if (_dbConnection == null)
             {
-                string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Studentx11.db3");
+                string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Studentx15.db3");
+               
+
+                Console.WriteLine(dbPath);
                 _dbConnection = new SQLiteAsyncConnection(dbPath);
                
                 try

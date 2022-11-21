@@ -1,9 +1,9 @@
 ﻿function showAlert(message) {
     //debugger;
     if (!this.GIS.Location) {
-        setTimeout(function () {
-            showAlert("");
-        }, 1000);
+        //setTimeout(function () {
+        //    showAlert("");
+        //}, 1000);
     } else {
         r = {
             entity: "",

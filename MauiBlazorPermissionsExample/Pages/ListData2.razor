@@ -1,0 +1,59 @@
+﻿@page "/listData2"
+@using Syncfusion.Blazor.TreeGrid
+@using Syncfusion.Blazor.Grids
+@using MauiBlazorPermissionsExample.Services
+@inject IStudentService StudentService
+@using MauiBlazorPermissionsExample.Models
+<div style="position:relative; min-height: 1000px;">
+    <SfGrid DataSource="@TreeData" EnableAdaptiveUI="true" AllowPaging="true">
+        <GridColumns>
+            <GridColumn Field=@nameof(person.perid) HeaderText="perid" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(person.nme) HeaderText="name"></GridColumn>
+            <GridColumn Field=@nameof(person.surnme) HeaderText="surename" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
+
+        </GridColumns>
+    </SfGrid>
+</div>
+             
+@code{
+    private List<person> TreeData { get; set; }
+    public class provinecList
+    {
+
+        public int? proid { get; set; }
+        @*public string nameThia { get; set; }
+        public string nameEng { get; set; }*@
+        public int region { get; set; }
+    };
+    private List<person>
+        treeData2 = new List<person>     ();
+    protected override async void OnInitialized()
+    {
+        await StudentService.getPersonsByStaff();
+        this.TreeData = await StudentService.GetAllperson();
+        StateHasChanged();
+
+
+        @*foreach (var item in this.TreeData.ToList())
+            {
+                try
+                {
+                    this.treeData2.Add(new provinecList()
+                    {
+
+                        proid = int.Parse(item.province_id),
+                        nameEng = item.province_name_eng,
+                        nameThia = item.province_name_thai,
+                        region = item.region_id
+                    });
+                }
+                catch (Exception ex)
+                {
+                    var show = ex;
+                }
+            }*@
+
+
+    }
+}
