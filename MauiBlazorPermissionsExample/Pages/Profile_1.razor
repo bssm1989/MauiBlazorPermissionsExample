@@ -1,5 +1,5 @@
 ﻿@page "/profile_1"
-@page "/profile_1/{HC}"
+@page "/profile_1/{perid}"
 
 
 @inject IJSRuntime JSRuntime
@@ -17,6 +17,7 @@
 @using Syncfusion.Blazor.Calendars
 @using Syncfusion.Blazor.Data
 @using Syncfusion.Blazor.Navigations
+@inject NavigationManager UriHelper
 @*@inject HttpClient Http*@
 @using System.IO
 @inject IJSRuntime JSRuntime;
@@ -53,14 +54,14 @@
                         <button class="btn btn-primary" @onclick="OnButtonClick">Call C# from JS</button>
                         <input type='hidden' name='next' value='1'>
                         <div class="form-group">
-                            <SfNumericTextBox TValue="int" CssClass="e-outline" Placeholder="เลข"FloatLabelType="@FloatLabelType.Auto" @bind-Value="recordSurveyProfile.perid" ></SfNumericTextBox>
+                            <SfNumericTextBox TValue="int" CssClass="e-outline" Placeholder="เลข" FloatLabelType="@FloatLabelType.Auto" @bind-Value="recordSurveyProfile.perid"></SfNumericTextBox>
                             @*<SfTextBox CssClass="e-outline" Placeholder="เลข" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.perid" />*@
                         </div>
                         <div class="form-group">
 
                             <SfTextBox CssClass="e-outline" Placeholder="เลขบัตรประชาชน" FloatLabelType="@FloatLabelType.Auto" @bind-Value=" recordSurveyProfile.pid" />
                         </div>
-                       
+
                         <div class="form-group">
 
                             <div class="control-wrapper">
@@ -210,28 +211,28 @@
                     </EditForm>
                 </ContentTemplate>
             </AccordionItem>
-            <AccordionItem Header="ข้อมูลเชิงพื้นที่"  IconCss="e-indoor-games e-acrdn-icons">
+            <AccordionItem Header="ข้อมูลเชิงพื้นที่" IconCss="e-indoor-games e-acrdn-icons">
                 <ContentTemplate>
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
                         <DataAnnotationsValidator />
                         <br><h3>ข้อมูลเชิงพื้นที่</h3>
 
 
-                         <div class="row" style='border-style: dotted;border-width: 1px'>
-                             <div class="col-lg-12  mb-3">
+                        <div class="row" style='border-style: dotted;border-width: 1px'>
+                            <div class="col-lg-12  mb-3">
 
-                                 <div id="MapViewer2" style="position: relative; width: 100%; z-index: 10; padding-bottom: 50px; height: 500px; "></div>
+                                <div id="MapViewer2" style="position: relative; width: 100%; z-index: 10; padding-bottom: 50px; height: 500px; "></div>
 
-                                 <div class="form-group"><label for="lat">พิกัดบ้านละติจูด</label><InputText id="lat" class="form-control" placeholder="พิกัดบ้าน ละติจูด" @bind-Value=" recordSurveyProfile.lat" />                      </div>
-                                 <div class="form-group"><label for="lon">พิกัดบ้านลองจิจูด</label><InputText id="lon" class="form-control" placeholder="พิกัดบ้าน ลองจิจูด" @bind-Value=" recordSurveyProfile.lon" />                     </div>
-                                 <button class="btn btn-primary my-3">Current Location</button>
+                                <div class="form-group"><label for="lat">พิกัดบ้านละติจูด</label><InputText id="lat" class="form-control" placeholder="พิกัดบ้าน ละติจูด" @bind-Value=" recordSurveyProfile.lat" />                      </div>
+                                <div class="form-group"><label for="lon">พิกัดบ้านลองจิจูด</label><InputText id="lon" class="form-control" placeholder="พิกัดบ้าน ลองจิจูด" @bind-Value=" recordSurveyProfile.lon" />                     </div>
+                                <button class="btn btn-primary my-3">Current Location</button>
 
-                                 @*<div id="MapViewer2" style="position: relative; width: 100%; z-index: 10"></div>*@
-                                 <div class="col-md-6">
-                                     <button type="button" class="btn btn-info" @onclick="ShowAlertWindow">Show Alert Window</button>
-                                 </div>
-                                 <input @ref=button1 id="valuelng" type="text" @bind-value="recordSurveyProfile.lat" />
-                             </div>
+                                @*<div id="MapViewer2" style="position: relative; width: 100%; z-index: 10"></div>*@
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-info" @onclick="ShowAlertWindow">Show Alert Window</button>
+                                </div>
+                                <input @ref=button1 id="valuelng" type="text" @bind-value="recordSurveyProfile.lat" />
+                            </div>
 
                         </div>
 
@@ -356,7 +357,7 @@
     <div class="row">
         <div class="col-lg-12  mb-3">
 
-            <MatButton Raised="true" type="submit"  @onclick="AddStudentRecord" >บันทึก @complete</MatButton>
+            <MatButton Raised="true" type="submit" @onclick="AddStudentRecord">บันทึก @complete</MatButton>
 
 
         </div>
@@ -521,7 +522,7 @@
 
 @code {
     [Parameter]
-    public string HC { get; set; }
+    public string perid { get; set; }
     protected string Val1;
     string complete = "";
     private static person recordSurveyProfile = new person();
@@ -587,7 +588,7 @@
         await JSRuntime.InvokeAsync<object>("CStoJSCall");
     }
     [JSInvokable]
-    public static void JStoCSCall(string lat,string lng)
+    public static void JStoCSCall(string lat, string lng)
     {
         // content = DateTime.Now.ToString();
         recordSurveyProfile.lat = lat;
@@ -735,19 +736,19 @@
             const_school1 = await StudentService.GetAllconst_school();
             const_stsmar1 = await StudentService.GetAllconst_stsmar();
             const_vaccination1 = await StudentService.GetAllconst_vaccination();
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "HC", HC);
-            if (HC != null)
-            {
+            //await JSRuntime.InvokeVoidAsync("localStorage.setItem", "HC", HC);
+            //if (HC != null)
+            //{
 
-                person getAllSurPro = await StudentService.GetpersonByHC(HC);
-                //   recordSurveyProfile = getAllSurPro.First();
-                //	semaphonSlim.Wait();
-                //SelectThreatValueChanged(recordSurveyProfile.JUN);
-                //SelectDistrictValueChanged(recordSurveyProfile.AMP);
-                SelectProvinceId = "sel" + recordSurveyProfile.JUN;
-                SelectDistrictId = "sel" + recordSurveyProfile.AMP;
-                SelectTambonId = recordSurveyProfile.TMP;
-            }
+            //    person getAllSurPro = await StudentService.GetpersonByHC(HC);
+            //    //   recordSurveyProfile = getAllSurPro.First();
+            //    //	semaphonSlim.Wait();
+            //    //SelectThreatValueChanged(recordSurveyProfile.JUN);
+            //    //SelectDistrictValueChanged(recordSurveyProfile.AMP);
+            //    SelectProvinceId = "sel" + recordSurveyProfile.JUN;
+            //    SelectDistrictId = "sel" + recordSurveyProfile.AMP;
+            //    SelectTambonId = recordSurveyProfile.TMP;
+            //}
             if (recordSurveyProfile.AMP != null && recordSurveyProfile.AMP != "")
             {
 
@@ -759,6 +760,20 @@
             }
 
             provinces1 = await StudentService.GetAllprovince();
+            if (perid != null)
+            {
+
+                await StudentService.getPersonsByStaff();
+                var allPerson = await StudentService.GetAllperson();
+                List<person> filterPersonByPerid = allPerson.ToList().Where(x => x.perid == int.Parse(perid)).ToList();
+                var getFirst = filterPersonByPerid.FirstOrDefault();
+                if (!(getFirst is null))
+                {
+                    recordSurveyProfile = getFirst;
+                }
+
+                StateHasChanged();
+            }
         }
         catch (Exception ex)
         {
@@ -794,6 +809,7 @@
             //add record
         }
 
+        UriHelper.NavigateTo("ListData2");
 
     }
     protected async Task HandleValidSubmit(EditContext context)
@@ -801,10 +817,10 @@
         var test = context;
         int response = -1;
 
-        var  User = await StudentService.GetAllofc();
+        var User = await StudentService.GetAllofc();
         if (User.Count() > 0)
         {
-            recordSurveyProfile.savofc =Int16.Parse(User.First().ofc_no);
+            recordSurveyProfile.savofc = Int16.Parse(User.First().ofc_no);
 
         }
         if (response > 0)
@@ -820,25 +836,25 @@
 
 
 
-@*string User = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "name");
+        @*string User = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "name");
 
-        Random r = new Random();
-        int num = r.Next();
-        if (recordSurveyProfile.HC == null || recordSurveyProfile.perid == 0)
-        {
-            recordSurveyProfile.HC = num.ToString();
-            recordSurveyProfile.perid = num;
-        }
+            Random r = new Random();
+            int num = r.Next();
+            if (recordSurveyProfile.HC == null || recordSurveyProfile.perid == 0)
+            {
+                recordSurveyProfile.HC = num.ToString();
+                recordSurveyProfile.perid = num;
+            }
 
-        int updateStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-        recordSurveyProfile.JUN = SelectProvinceId;
-        recordSurveyProfile.AMP = SelectDistrictId;
-        recordSurveyProfile.TMP = tambonId;
-        recordSurveyProfile.picname1 = imageString;*@          ///////////////////////////////////////////
+            int updateStamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            recordSurveyProfile.JUN = SelectProvinceId;
+            recordSurveyProfile.AMP = SelectDistrictId;
+            recordSurveyProfile.TMP = tambonId;
+            recordSurveyProfile.picname1 = imageString;*@ ///////////////////////////////////////////
 
 
 
-@*var HCFromInput = configSurvey.HC_random(recordSurveyProfile.HC);
+        @*var HCFromInput = configSurvey.HC_random(recordSurveyProfile.HC);
 
             //recordSurveyProfile.survey_no = HCFromInput;
             List<person> GetHC = await DBContext.GetByIndex<string, person>("person", recordSurveyProfile.HC, null, "hc", false);
@@ -892,8 +908,8 @@
 
                     });
             }*@@*HC = recordSurveyProfile.HC;
-        //$log="insert into log_file ( id,username,time1,detail) values('','$username','".date("U") ."','เพิ่ม $HC')";
-        complete = "เรียบร้อย";*@     }
+            //$log="insert into log_file ( id,username,time1,detail) values('','$username','".date("U") ."','เพิ่ม $HC')";
+            complete = "เรียบร้อย";*@}
 
 }
 

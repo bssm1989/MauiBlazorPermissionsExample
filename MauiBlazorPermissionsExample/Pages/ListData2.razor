@@ -2,24 +2,50 @@
 @using Syncfusion.Blazor.TreeGrid
 @using Syncfusion.Blazor.Grids
 @using MauiBlazorPermissionsExample.Services
+@inject NavigationManager UriHelper
+@using Syncfusion.Blazor.Buttons
 @inject IStudentService StudentService
 @using MauiBlazorPermissionsExample.Models
-<div style="position:relative; min-height: 1000px;">
-    <SfGrid DataSource="@TreeData" EnableAdaptiveUI="true" AllowPaging="true" AllowFiltering="true" AllowSorting="true" AllowGrouping="true">
-        <GridColumns>
-            <GridColumn Field=@nameof(person.perid) HeaderText="perid" TextAlign="TextAlign.Right"></GridColumn>
-            <GridColumn Field=@nameof(person.savofc)  TextAlign="TextAlign.Right"></GridColumn>
+<div class="col-lg-12 control-section">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="content-wrapper e-bigger e-adaptive-demo">
+                <div class="e-mobile-layout">
+                    <div class="e-mobile-content">
+                        <SfGrid DataSource="@TreeData" EnableAdaptiveUI="true"RowRenderingMode="RowDirection.Vertical" Height="100%" Width="100%"  AllowPaging="true" AllowFiltering="false" AllowSorting="true" AllowGrouping="false">
+                            <GridColumns>
+                                <GridColumn Field=@nameof(person.perid) HeaderText="perid" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn Field=@nameof(person.savofc) TextAlign="TextAlign.Right"></GridColumn>
 
-            <GridColumn Field=@nameof(person.nme) HeaderText="name"></GridColumn>
-            <GridColumn Field=@nameof(person.surnme) HeaderText="surename" TextAlign="TextAlign.Right"></GridColumn>
-            <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
-            <GridColumn Field=@nameof(person.brtdte) Format="brtdte" TextAlign="TextAlign.Right"></GridColumn>
-            <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn Field=@nameof(person.nme) HeaderText="name" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn Field=@nameof(person.surnme) HeaderText="surename" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn Field=@nameof(person.brtdte) Format="brtdte" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn HeaderText="Manage Records" Width="150">
+                                    <Template>
+                                        @{
+                                            var ticket = (context as person);
+                                            if (ticket != null)
+                                            {
+                                                <SfButton OnClick="@(()=>Clicked(ticket.perid))" IconCss="e-icons e-edit" CssClass="e-flat">แก้ไข</SfButton>
 
-        </GridColumns>
-    </SfGrid>
+                                            }
+
+                                        }
+                                    </Template>
+                                    @*<GridCommandColumns>
+                                            <GridCommandColumn href="/navigate2" ButtonOption="@(new CommandButtonOptions() {IconCss="e-icons e-edit", CssClass="e-flat" })"></GridCommandColumn>
+                                        </GridCommandColumns>*@
+                                </GridColumn>
+                            </GridColumns>
+                        </SfGrid>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-             
+
 @code{
     private List<person> TreeData { get; set; }
     public class provinecList
@@ -27,11 +53,18 @@
 
         public int? proid { get; set; }
         @*public string nameThia { get; set; }
-        public string nameEng { get; set; }*@
+            public string nameEng { get; set; }*@
         public int region { get; set; }
     };
     private List<person>
-        treeData2 = new List<person>     ();
+        treeData2 = new List<person>();
+    public void Clicked(int id)
+    {
+
+
+        UriHelper.NavigateTo("Profile_1/"+id);
+
+    }
     protected override async void OnInitialized()
     {
         await StudentService.getPersonsByStaff();
