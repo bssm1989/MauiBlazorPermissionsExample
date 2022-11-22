@@ -5,11 +5,15 @@
 @inject IStudentService StudentService
 @using MauiBlazorPermissionsExample.Models
 <div style="position:relative; min-height: 1000px;">
-    <SfGrid DataSource="@TreeData" EnableAdaptiveUI="true" AllowPaging="true">
+    <SfGrid DataSource="@TreeData" EnableAdaptiveUI="true" AllowPaging="true" AllowFiltering="true" AllowSorting="true" AllowGrouping="true">
         <GridColumns>
             <GridColumn Field=@nameof(person.perid) HeaderText="perid" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(person.savofc)  TextAlign="TextAlign.Right"></GridColumn>
+
             <GridColumn Field=@nameof(person.nme) HeaderText="name"></GridColumn>
             <GridColumn Field=@nameof(person.surnme) HeaderText="surename" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
+            <GridColumn Field=@nameof(person.brtdte) Format="brtdte" TextAlign="TextAlign.Right"></GridColumn>
             <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
 
         </GridColumns>
@@ -32,6 +36,7 @@
     {
         await StudentService.getPersonsByStaff();
         this.TreeData = await StudentService.GetAllperson();
+        this.TreeData = TreeData.ToList().Where(x => x.savofc == 4).ToList();
         StateHasChanged();
 
 

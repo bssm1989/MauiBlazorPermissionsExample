@@ -284,6 +284,7 @@ namespace MauiBlazorPermissionsExample.Services
         }
         public async Task<int> getLogin(login userType)
         {
+
             try
             {
                 using(var client = new HttpClient())
@@ -337,39 +338,39 @@ namespace MauiBlazorPermissionsExample.Services
                 using (var client=new HttpClient())
                 {
 
-                    //Debug.WriteLine("drop**************");
-                    //var checkList = await this.GetAllprovince();
-                    //Debug.WriteLine(checkList.Count() + " num************");
-                    //var check_const_prenme = await this.GetAllconst_prenme();
-                    ////  var check_const_sex = await this.GetAllconst_sex();
-                    //var check_const_currlev = await this.GetAllconst_currlev();
-                    //var check_const_disability_type = await this.GetAllconst_disability_type();
-                    //var check_const_edulev = await this.GetAllconst_edulev();
-                    //var check_const_elderly_grp = await this.GetAllconst_elderly_grp();
-                    //var check_const_house_conditions = await this.GetAllconst_house_conditions();
-                    //var check_const_occ = await this.GetAllconst_occ();
-                    //var check_const_pertyp = await this.GetAllconst_pertyp();
-                    //var check_const_reg = await this.GetAllconst_reg();
-                    //var check_const_reltyp = await this.GetAllconst_reltyp();
-                    //var check_const_school = await this.GetAllconst_school();
-                    //var check_const_stsmar = await this.GetAllconst_stsmar();
-                    //var check_const_vaccination = await this.GetAllconst_vaccination();
-                    //Debug.WriteLine(check_const_prenme.Count() + "**********");
-                    ////   Debug.WriteLine(check_const_sex.Count() + "**********");
-                    //Debug.WriteLine(check_const_currlev.Count() + "**********");
-                    //Debug.WriteLine(check_const_disability_type.Count() + "**********");
-                    //Debug.WriteLine(check_const_edulev.Count() + "**********");
-                    //Debug.WriteLine(check_const_elderly_grp.Count() + "**********");
-                    //Debug.WriteLine(check_const_house_conditions.Count() + "**********");
-                    //Debug.WriteLine(check_const_occ.Count() + "**********");
-                    //Debug.WriteLine(check_const_pertyp.Count() + "**********");
-                    //Debug.WriteLine(check_const_reg.Count() + "**********");
-                    //Debug.WriteLine(check_const_reltyp.Count() + "**********");
-                    //Debug.WriteLine(check_const_school.Count() + "**********");
-                    //Debug.WriteLine(check_const_stsmar.Count() + "**********");
-                    //Debug.WriteLine(check_const_vaccination.Count() + "**********");
-                    //if (check_const_vaccination.Count()<1)
-                        if (true)
+                    Debug.WriteLine("drop**************");
+                    var checkList = await this.GetAllprovince();
+                    Debug.WriteLine(checkList.Count() + " num************");
+                    var check_const_prenme = await this.GetAllconst_prenme();
+                    //  var check_const_sex = await this.GetAllconst_sex();
+                    var check_const_currlev = await this.GetAllconst_currlev();
+                    var check_const_disability_type = await this.GetAllconst_disability_type();
+                    var check_const_edulev = await this.GetAllconst_edulev();
+                    var check_const_elderly_grp = await this.GetAllconst_elderly_grp();
+                    var check_const_house_conditions = await this.GetAllconst_house_conditions();
+                    var check_const_occ = await this.GetAllconst_occ();
+                    var check_const_pertyp = await this.GetAllconst_pertyp();
+                    var check_const_reg = await this.GetAllconst_reg();
+                    var check_const_reltyp = await this.GetAllconst_reltyp();
+                    var check_const_school = await this.GetAllconst_school();
+                    var check_const_stsmar = await this.GetAllconst_stsmar();
+                    var check_const_vaccination = await this.GetAllconst_vaccination();
+                    Debug.WriteLine(check_const_prenme.Count() + "**********");
+                    //   Debug.WriteLine(check_const_sex.Count() + "**********");
+                    Debug.WriteLine(check_const_currlev.Count() + "**********");
+                    Debug.WriteLine(check_const_disability_type.Count() + "**********");
+                    Debug.WriteLine(check_const_edulev.Count() + "**********");
+                    Debug.WriteLine(check_const_elderly_grp.Count() + "**********");
+                    Debug.WriteLine(check_const_house_conditions.Count() + "**********");
+                    Debug.WriteLine(check_const_occ.Count() + "**********");
+                    Debug.WriteLine(check_const_pertyp.Count() + "**********");
+                    Debug.WriteLine(check_const_reg.Count() + "**********");
+                    Debug.WriteLine(check_const_reltyp.Count() + "**********");
+                    Debug.WriteLine(check_const_school.Count() + "**********");
+                    Debug.WriteLine(check_const_stsmar.Count() + "**********");
+                    Debug.WriteLine(check_const_vaccination.Count() + "**********");
+                    if (check_const_vaccination.Count()<1)
+                    //if (true)
                         {
                         string url = $"https://www.psutrobon.com/gis_bssm/index.php?table=province";
                         var apiResponse = await client.GetAsync(url);
