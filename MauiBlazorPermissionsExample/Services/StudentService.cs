@@ -246,7 +246,7 @@ namespace MauiBlazorPermissionsExample.Services
         public async Task<int> Addconst_stsmar(const_stsmar dataList) { return await _dbConnection.InsertOrReplaceAsync(dataList); }
         public async Task<int> Addconst_vaccination(const_vaccination dataList) { return await _dbConnection.InsertOrReplaceAsync(dataList); }
         public async Task<int> Addperson(person dataList) { return await _dbConnection.InsertOrReplaceAsync(dataList); }
-        public async Task<int> getPersonsByStaff()
+        public async Task<int> getPersonsSyncOnlinesByStaff()
         {
             try
             {

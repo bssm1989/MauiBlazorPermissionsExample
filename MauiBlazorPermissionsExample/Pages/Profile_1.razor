@@ -51,7 +51,7 @@
 
                     <EditForm Model="@recordSurveyProfile" OnValidSubmit="@HandleValidSubmit">
                         <DataAnnotationsValidator />
-                        <button class="btn btn-primary" @onclick="OnButtonClick">Call C# from JS</button>
+                       
                         <input type='hidden' name='next' value='1'>
                         <div class="form-group">
                             <SfNumericTextBox TValue="int" CssClass="e-outline" Placeholder="เลข" FloatLabelType="@FloatLabelType.Auto" @bind-Value="recordSurveyProfile.perid"></SfNumericTextBox>
@@ -582,11 +582,7 @@
     private static string content { get; set; }
     private ElementReference button1;
     private ElementReference button2;
-    private async Task OnButtonClick()
-    {
-        //("showAlert", "JS function called from .NET");
-        await JSRuntime.InvokeAsync<object>("CStoJSCall");
-    }
+    
     [JSInvokable]
     public static void JStoCSCall(string lat, string lng)
     {
@@ -763,7 +759,7 @@
             if (perid != null)
             {
 
-                await StudentService.getPersonsByStaff();
+                await StudentService.getPersonsSyncOnlinesByStaff();
                 var allPerson = await StudentService.GetAllperson();
                 List<person> filterPersonByPerid = allPerson.ToList().Where(x => x.perid == int.Parse(perid)).ToList();
                 var getFirst = filterPersonByPerid.FirstOrDefault();

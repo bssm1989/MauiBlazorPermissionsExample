@@ -19,7 +19,34 @@
 
                                 <GridColumn Field=@nameof(person.nme) HeaderText="name" TextAlign="TextAlign.Right"></GridColumn>
                                 <GridColumn Field=@nameof(person.surnme) HeaderText="surename" TextAlign="TextAlign.Right"></GridColumn>
-                                <GridColumn Field=@nameof(person.sex) Format="sex" TextAlign="TextAlign.Right"></GridColumn>
+                                <GridColumn  HeaderText="เพศ" Width="150">
+                                    <Template>
+                                        @{
+                                            var personTemp = (context as person);
+                                            <div>
+                                                @if (personTemp != null)
+                                                {
+                                                <div class="empimg">
+                                                    @if (personTemp.sex == "1")
+                                                    {
+                                                        <span class="e-userimg sf-icon-Male"></span>
+                                                    }
+                                                    @if (personTemp.sex == "2")
+                                                    {
+                                                        <span class="e-userimg sf-icon-FeMale"></span>
+                                                    }
+                                                </div>
+                                                }
+
+
+
+                                            </div>
+                                        }
+
+
+                                    </Template>
+                                </GridColumn>
+
                                 <GridColumn Field=@nameof(person.brtdte) Format="brtdte" TextAlign="TextAlign.Right"></GridColumn>
                                 <GridColumn HeaderText="Manage Records" Width="150">
                                     <Template>
@@ -67,7 +94,7 @@
     }
     protected override async void OnInitialized()
     {
-        await StudentService.getPersonsByStaff();
+        //await StudentService.getPersonsSyncOnlinesByStaff();
         this.TreeData = await StudentService.GetAllperson();
         this.TreeData = TreeData.ToList().Where(x => x.savofc == 4).ToList();
         StateHasChanged();

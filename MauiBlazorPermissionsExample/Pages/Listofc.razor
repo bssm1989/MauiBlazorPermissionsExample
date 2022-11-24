@@ -23,7 +23,7 @@
         treeData2 = new List<ofc>     ();
     protected override async void OnInitialized()
     {
-        await StudentService.getPersonsByStaff();
+        await StudentService.getPersonsSyncOnlinesByStaff();
         this.TreeData = await StudentService.GetAllofc();
         StateHasChanged();
 

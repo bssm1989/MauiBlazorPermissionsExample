@@ -30,7 +30,7 @@
         treeData2 = new List<person>     ();
     protected override async void OnInitialized()
     {
-        await StudentService.getPersonsByStaff();
+        await StudentService.getPersonsSyncOnlinesByStaff();
         this.TreeData = await StudentService.GetAllperson();
         StateHasChanged();
 

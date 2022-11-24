@@ -44,6 +44,6 @@ namespace MauiBlazorPermissionsExample.Services
         //Task<List<ofc>> GetAllofcFirst();
         Task<List<ofc>> GetAllofc();
         Task<int> Deleteofc(ofc studentModel);
-        Task<int> getPersonsByStaff();
+        Task<int> getPersonsSyncOnlinesByStaff();
     }
 }
